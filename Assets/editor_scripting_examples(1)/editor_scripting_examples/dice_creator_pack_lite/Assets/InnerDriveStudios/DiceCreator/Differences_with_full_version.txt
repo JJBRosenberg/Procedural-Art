@@ -1,0 +1,31 @@
+The following things are availabe in the full version:
+- High resolution meshes
+- Api docs
+- UV templates
+- Materials:
+	AnimatedBluePlasma
+	AnimatedMotherOfPearl
+	AnimatedPurpleGem
+	ChalkStoneBrown
+	ChalkStoneGreen
+	ChalkStoneWhite
+	ChalkStoneYellow
+	ChromeDamagedWhite
+	ChromeMatteWhite
+	ChromePolishedBlue
+	ErodedMarbleBlue
+	ErodedMarbleWhite
+	PlasticPurple
+	SpeckledBlackGlossRedGlyph
+	SpeckledBlackGlossWhiteGlyph
+	WhiteOnBlackMatte
+	WoodDark
+	WoodLight
+	_BlankChalkStoneYellow
+	_Generic
+	_HighGlossMultiValue
+- Multi valued dice
+- Masked dice shaders
+- Several sample scenes
+- Updates
+

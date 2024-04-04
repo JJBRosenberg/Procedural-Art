@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1531590937550994
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4166614137140252}
+  - component: {fileID: 114641098835390960}
+  m_Layer: 0
+  m_Name: StackCreator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4166614137140252
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1531590937550994}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114641098835390960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1531590937550994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a1244fda9ffe7488d5c1cb9981f091, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  newParentName: Stack
+  keepGrounded: 1
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  stackPrefabs:
+  - {fileID: 1863212150320378, guid: 9273f0692452d1d45891707cf7b3e35c, type: 3}
+  - {fileID: 1862356211486470, guid: 17b16e0e852aed6469140f03f7008e7c, type: 3}
+  - {fileID: 1199887799151576, guid: b2a58e242a20d34438069d132645c11a, type: 3}
+  - {fileID: 1631499466211152, guid: 300bbc6da7d4d584193a9d670dcb887c, type: 3}
+  minStackSize: 4
+  maxStackSize: 9
+  bottomObjectScale: 1.5
+  topObjectScale: 0.8
+  scaleVariation: 0.3
+  randomPositionOffset: 0
+  startRotationVariance: 0
+  objectRotationVariance: 60
+  objectRotationOffset: 0
+  compoundCapsuleCollider: 0
+  yOffset: 0
+  placementKey: 91
+  replacementKey: 93
