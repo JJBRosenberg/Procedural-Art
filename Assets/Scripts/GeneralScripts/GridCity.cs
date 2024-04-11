@@ -9,9 +9,11 @@ namespace Demo
         public int rowWidth = 10;
         public int columnWidth = 10;
         public GameObject[] buildingPrefabs;
-        public GameObject debugPrefab; // Add reference to the debug cube prefab
+        public GameObject debugPrefab; 
 
         public float buildDelaySeconds = 0.1f;
+        public int townCenterRows; 
+        public int townCenterColumns; 
 
         private ValueGrid valueGrid;
 
@@ -45,11 +47,12 @@ namespace Demo
                 for (int col = 0; col < columns; col++)
                 {
                     Vector3 worldPosition = new Vector3(col * columnWidth, 0, row * rowWidth);
-                    // Check if the current cell is part of the no-build zone
-                    if (valueGrid != null && valueGrid.GetCell(row, col) == 1)
+
+                    // Check if the current cell is within the inner area
+                    if (IsInnerArea(row, col))
                     {
-                        Debug.Log("No build zone!");
-                        // Instantiate debug cube in the no-build zone
+                        Debug.Log($"Inner area at ({row}, {col})");
+                        // Instantiate debug cube in the inner area
                         Instantiate(debugPrefab, worldPosition, Quaternion.identity, transform);
                     }
                     else
@@ -72,6 +75,13 @@ namespace Demo
                     }
                 }
             }
+        }
+
+        bool IsInnerArea(int row, int col)
+        {
+            int startRow = (rows - townCenterRows) / 2;
+            int startCol = (columns - townCenterColumns) / 2;
+            return row >= startRow && row < startRow + townCenterRows && col >= startCol && col < startCol + townCenterColumns;
         }
     }
 }

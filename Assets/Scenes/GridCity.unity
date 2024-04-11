@@ -450,6 +450,8 @@ MonoBehaviour:
   - {fileID: 746639827770723165, guid: 0af37a37411cd034d9d8cd24774f517a, type: 3}
   debugPrefab: {fileID: 523042564}
   buildDelaySeconds: 0.1
+  townCenterRows: 3
+  townCenterColumns: 3
 --- !u!4 &1087066582
 Transform:
   m_ObjectHideFlags: 0
