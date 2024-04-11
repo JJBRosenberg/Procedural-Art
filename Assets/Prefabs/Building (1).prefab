@@ -52,11 +52,14 @@ MonoBehaviour:
   - {fileID: 1652514750261571595, guid: 32851a233c1c716439f21d3f757be818, type: 3}
   - {fileID: 73109537240298143, guid: 5421aa96e380afd4a984dd67938c1a11, type: 3}
   - {fileID: 2082810598863213432, guid: 614a44074c8cff5448f6fd029bcf9785, type: 3}
+  doorPrefab: {fileID: -927199367670048503, guid: 878d7f23d69aa4545a723f41f6d5707e,
+    type: 3}
   roofStyle:
   - {fileID: -927199367670048503, guid: 20ce4895fadfac84d827e8a2db9526f6, type: 3}
   - {fileID: -927199367670048503, guid: d47dbadf5ffe0474eb6be594ce5e3849, type: 3}
-  doorPrefab: {fileID: -927199367670048503, guid: 878d7f23d69aa4545a723f41f6d5707e,
+  balconyPrefab: {fileID: -927199367670048503, guid: 5a450e78da68c1040b9f9f72bb96ecdb,
     type: 3}
+  minHeight: 6
 --- !u!114 &746639827770723167
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,17 +14,22 @@ namespace Demo
         GameObject[] roofStyle;
         GameObject[] wallStyle;
         GameObject doorStyle;
+        GameObject balconyPrefab; // Change to single GameObject for balconyPrefab
 
         // (offset) values for the next layer:
         int newWidth;
         int newDepth;
 
-        public void Initialize(int Width, int Depth, GameObject[] roofStyle, GameObject[] wallStyle)
+        // Define the balcony chance variable
+        const float balconyChanceAbove2 = 0.3f;
+
+        public void Initialize(int Width, int Depth, GameObject[] roofStyle, GameObject[] wallStyle, GameObject balconyPrefab, int currentHeightIndex = 0)
         {
             this.Width = Width;
             this.Depth = Depth;
             this.roofStyle = roofStyle;
             this.wallStyle = wallStyle;
+            this.balconyPrefab = balconyPrefab;
             this.currentHeightIndex = currentHeightIndex;
         }
 
@@ -78,20 +83,33 @@ namespace Demo
             if (newWidth <= 0 || newDepth <= 0)
                 return;
 
-            float randomValue = RandomFloat();
-            if (randomValue < roofContinueChance)
-            { // continue with the roof
-                SimpleRoof nextRoof = CreateSymbol<SimpleRoof>("roof");
-                nextRoof.Initialize(newWidth, newDepth, roofStyle, wallStyle);
-                nextRoof.Generate(buildDelay);
+            // Check if the current height index is above a threshold for spawning balconies
+            bool spawnBalcony = currentHeightIndex > 2 && Random.value < balconyChanceAbove2;
+
+            if (spawnBalcony)
+            { // Create a balcony
+                SimpleRow balcony = CreateSymbol<SimpleRow>("balcony", Vector3.zero);
+                GameObject[] balconyPrefabArray = { balconyPrefab }; // Convert balconyPrefab to an array
+                balcony.Initialize(Width, balconyPrefabArray); // Corrected parameter here
+                balcony.Generate();
             }
             else
-            { // continue with a stock
-                SimpleStock nextStock = CreateSymbol<SimpleStock>("stock");
-                // Assuming doorPrefab is set to null as it's not managed or relevant for roofs
-                // Ensure the order and types of arguments match the expected signature
-                nextStock.Initialize(newWidth, newDepth, wallStyle, null, roofStyle, currentHeightIndex + 1);
-                nextStock.Generate(buildDelay);
+            { // Continue with the roof or a stock
+                float randomValue = RandomFloat();
+                if (randomValue < roofContinueChance)
+                { // continue with the roof
+                    SimpleRoof nextRoof = CreateSymbol<SimpleRoof>("roof");
+                    nextRoof.Initialize(newWidth, newDepth, roofStyle, wallStyle, balconyPrefab);
+                    nextRoof.Generate(buildDelay);
+                }
+                else
+                { // continue with a stock
+                    SimpleStock nextStock = CreateSymbol<SimpleStock>("stock");
+                    // Assuming doorPrefab is set to null as it's not managed or relevant for roofs
+                    // Ensure the order and types of arguments match the expected signature
+                    nextStock.Initialize(newWidth, newDepth, wallStyle, null, roofStyle, balconyPrefab, currentHeightIndex + 1);
+                    nextStock.Generate(buildDelay);
+                }
             }
         }
 

@@ -4,10 +4,9 @@ namespace Demo
 {
     public class SimpleStock : Shape
     {
-        // grammar rule probabilities:
         const float stockContinueChance = 0.5f;
+        const float balconyChanceAbove2 = 0.3f;
 
-        // shape parameters:
         [SerializeField]
         int Width;
         [SerializeField]
@@ -16,39 +15,40 @@ namespace Demo
         [SerializeField]
         GameObject[] wallStyle;
         [SerializeField]
-        GameObject doorPrefab; // The door prefab
+        GameObject doorPrefab;
         [SerializeField]
         GameObject[] roofStyle;
+        [SerializeField]
+        GameObject balconyPrefab;
 
-        private int doorWallIndex; // Index for the wall that will have the door
-        private int currentHeightIndex = 0; // Tracks the current height of the building
+        private int doorWallIndex;
+        private int currentHeightIndex = 0;
 
-        public void Initialize(int Width, int Depth, GameObject[] wallStyle, GameObject doorPrefab, GameObject[] roofStyle, int currentHeightIndex = 0)
+        public void Initialize(int Width, int Depth, GameObject[] wallStyle, GameObject doorPrefab, GameObject[] roofStyle, GameObject balconyPrefab, int currentHeightIndex = 0)
         {
             this.Width = Width;
             this.Depth = Depth;
             this.wallStyle = wallStyle;
             this.doorPrefab = doorPrefab;
             this.roofStyle = roofStyle;
+            this.balconyPrefab = balconyPrefab;
             this.currentHeightIndex = currentHeightIndex;
 
-            // Only select a doorWallIndex if this is the ground floor
             if (currentHeightIndex == 0)
             {
-                doorWallIndex = Random.Range(0, 4); // Randomly choose one wall to have the door on the ground floor
+                doorWallIndex = Random.Range(0, 4);
             }
             else
             {
-                doorWallIndex = -1; // Ensure no door is placed on higher floors
+                doorWallIndex = -1;
             }
         }
 
         protected override void Execute()
         {
-            // Create four walls:
             for (int i = 0; i < 4; i++)
             {
-                Vector3 localPosition = new Vector3();
+                Vector3 localPosition = Vector3.zero;
                 switch (i)
                 {
                     case 0:
@@ -64,11 +64,17 @@ namespace Demo
                         localPosition = new Vector3(0, 0, -(Depth - 1) * 0.5f); // front
                         break;
                 }
+
                 SimpleRow newRow;
                 if (i == doorWallIndex)
                 {
                     newRow = CreateSymbol<SimpleRow>("wallWithDoor", localPosition, Quaternion.Euler(0, i * 90, 0));
-                    newRow.Initialize(i % 2 == 1 ? Width : Depth, new GameObject[] { doorPrefab }); // Use the door prefab for this wall
+                    newRow.Initialize(i % 2 == 1 ? Width : Depth, new GameObject[] { doorPrefab });
+                }
+                else if (i == 3 && currentHeightIndex > 0 && Random.value < balconyChanceAbove2)
+                {
+                    newRow = CreateSymbol<SimpleRow>("balcony", localPosition, Quaternion.Euler(0, i * 90, 0));
+                    newRow.Initialize(i % 2 == 1 ? Width : Depth, new GameObject[] { balconyPrefab });
                 }
                 else
                 {
@@ -78,18 +84,17 @@ namespace Demo
                 newRow.Generate();
             }
 
-            // Continue with a stock or with a roof (random choice):
             float randomValue = RandomFloat();
             if (randomValue < stockContinueChance)
             {
                 SimpleStock nextStock = CreateSymbol<SimpleStock>("stock", new Vector3(0, 1, 0));
-                nextStock.Initialize(Width, Depth, wallStyle, doorPrefab, roofStyle, currentHeightIndex + 1);
+                nextStock.Initialize(Width, Depth, wallStyle, doorPrefab, roofStyle, balconyPrefab, currentHeightIndex + 1);
                 nextStock.Generate(buildDelay);
             }
             else
             {
                 SimpleRoof nextRoof = CreateSymbol<SimpleRoof>("roof", new Vector3(0, 1, 0));
-                nextRoof.Initialize(Width, Depth, roofStyle, wallStyle);
+                nextRoof.Initialize(Width, Depth, roofStyle, wallStyle, balconyPrefab);
                 nextRoof.Generate(buildDelay);
             }
         }
