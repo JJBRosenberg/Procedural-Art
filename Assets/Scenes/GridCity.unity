@@ -446,7 +446,9 @@ MonoBehaviour:
   rowWidth: 5
   columnWidth: 5
   buildingPrefabs:
-  - {fileID: 3604920485432597347, guid: fee6c2ac503a81e4cb074a72365b79d0, type: 3}
+  - {fileID: 8956201480844612614, guid: 91f189080e803824bb97716d7c194215, type: 3}
+  - {fileID: 746639827770723165, guid: 0af37a37411cd034d9d8cd24774f517a, type: 3}
+  debugPrefab: {fileID: 523042564}
   buildDelaySeconds: 0.1
 --- !u!4 &1087066582
 Transform:
@@ -475,9 +477,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
-  cornerPrefabs: []
-  debugPrefab: {fileID: 0}
-  prefabRotations: 
+  cornerPrefabs:
+  - {fileID: -927199367670048503, guid: c63d6fd6af37d3348bcae4494999f8ec, type: 3}
+  - {fileID: -927199367670048503, guid: 75228dc542ffe154898d192cceed9b16, type: 3}
+  - {fileID: -927199367670048503, guid: 5bda5f51354ae0a4dbeba1068e5a970e, type: 3}
+  - {fileID: -927199367670048503, guid: 17f4b79a09b90a04c86a789027d2fbfe, type: 3}
+  - {fileID: -927199367670048503, guid: b000453f08dd38548bf59a6e2d937cec, type: 3}
+  - {fileID: -927199367670048503, guid: ec5a3c5b4ddad1b4c921df245972c2bc, type: 3}
+  debugPrefab: {fileID: -927199367670048503, guid: 50c8c740023493e48a752bf6beed6688,
+    type: 3}
+  prefabRotations: 000000000200000002000000000000000000000000000000
 --- !u!114 &1087066584
 MonoBehaviour:
   m_ObjectHideFlags: 0
