@@ -5,42 +5,27 @@ namespace Demo
 {
     public class GridCity : MonoBehaviour
     {
-        public int rows = 10;
-        public int columns = 10;
-        public int rowWidth = 10;
-        public int columnWidth = 10;
-        public int minBuildingHeight = 1;
-        public int maxBuildingHeight = 2;
+        public ValueGrid valueGrid;
         public GameObject[] buildingPrefabs;
         public GameObject roadPrefab;
         public float buildingSpacing = 2.0f;
         public float buildDelaySeconds = 0.1f;
-        public Vector2Int giantBuildingPosition;
-        public float centerHeightInfluence = 1.0f;
-        public float roadStartWidth = 5.0f;
-        public int minStockWidth = 1;
-        public int minStockHeight = 1;
-        public int maxStockWidth = 5;
-        public int maxStockHeight = 5;
         public GameObject giantBuildingPrefab;
         public float centerNodeWidth = 50;
         public float centerNodeHeight = 50;
-
-        private bool isInitialGenerationComplete = false;
-        private Coroutine regenerateCoroutine = null;
+        private float roadStartWidth = 5.0f;
 
         private void Start()
         {
-            if (ValidatePrefabs())
+            if (ValidatePrefabs() && valueGrid != null)
             {
                 Generate();
-                isInitialGenerationComplete = true;
             }
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.G) && ValidatePrefabs())
+            if (Input.GetKeyDown(KeyCode.G) && ValidatePrefabs() && valueGrid != null)
             {
                 Regenerate();
             }
@@ -53,17 +38,7 @@ namespace Demo
 
         private void Regenerate()
         {
-            if (regenerateCoroutine != null)
-            {
-                StopCoroutine(regenerateCoroutine);
-            }
-            regenerateCoroutine = StartCoroutine(RegenerateCoroutine());
-        }
-
-        private IEnumerator RegenerateCoroutine()
-        {
             DestroyChildren();
-            yield return null;
             Generate();
         }
 
@@ -77,21 +52,60 @@ namespace Demo
 
         private void Generate()
         {
-            BSPNode rootNode = new BSPNode(0, 0, columns * columnWidth, rows * rowWidth);
+            // Ensure the ValueGrid component is available
+            if (valueGrid == null)
+            {
+                Debug.LogError("ValueGrid reference is missing!");
+                return;
+            }
+
+            int rowWidth = (int)valueGrid.cellSize;
+            int columnWidth = (int)valueGrid.cellSize;
+
+            // Start city generation process using ValueGrid dimensions
+            BSPNode rootNode = new BSPNode(0, 0, valueGrid.Width * columnWidth, valueGrid.Depth * rowWidth);
+            CreatePerimeterRoad(rootNode); // Create a road along the perimeter first
             SplitNode(rootNode, 4);
             SpawnBuildingsInLeafNodes(rootNode);
             CreateCenterNode();
         }
 
+        private void CreatePerimeterRoad(BSPNode node)
+        {
+            // Create a road along the entire perimeter of the grid
+            SpawnRoad(node.x, node.y, node.width, roadStartWidth, true);
+            SpawnRoad(node.x, node.y, roadStartWidth, node.height, false);
+            SpawnRoad(node.x, node.y + node.height - roadStartWidth, node.width, roadStartWidth, true);
+            SpawnRoad(node.x + node.width - roadStartWidth, node.y, roadStartWidth, node.height, false);
+        }
+
         private void SplitNode(BSPNode node, int depth)
         {
-            if (depth <= 0 || (node.width < 2 * columnWidth && node.height < 2 * rowWidth))
+            if (depth <= 0 || (node.width < 2 * (int)valueGrid.cellSize && node.height < 2 * (int)valueGrid.cellSize))
             {
                 return;
             }
+
+            // Check if the node is already smaller than the cell size
+            if (node.width < (int)valueGrid.cellSize || node.height < (int)valueGrid.cellSize)
+            {
+                return;
+            }
+
             bool splitHorizontally = node.width < node.height ? true : Random.Range(0, 2) == 0;
+
+            // Calculate the minimum dimension after the split
+            float minDimensionAfterSplit = splitHorizontally ? (int)valueGrid.cellSize : (int)valueGrid.cellSize;
+
+            // Check if either child node would be smaller than the cell size after the split
+            if (node.width - minDimensionAfterSplit < minDimensionAfterSplit || node.height - minDimensionAfterSplit < minDimensionAfterSplit)
+            {
+                return;
+            }
+
             float splitPos = splitHorizontally ? Random.Range(1, node.height - 1) : Random.Range(1, node.width - 1);
             float roadWidth = CalculateRoadWidth(splitHorizontally ? node.height : node.width);
+
             if (splitHorizontally)
             {
                 node.child1 = new BSPNode(node.x, node.y, node.width, splitPos - roadWidth / 2);
@@ -104,13 +118,14 @@ namespace Demo
                 node.child2 = new BSPNode(node.x + splitPos + roadWidth / 2, node.y, node.width - splitPos - roadWidth / 2, node.height);
                 SpawnRoad(node.x + splitPos - roadWidth / 2, node.y, roadWidth, node.height, false);
             }
+
             SplitNode(node.child1, depth - 1);
             SplitNode(node.child2, depth - 1);
         }
 
         private float CalculateRoadWidth(float nodeDimension)
         {
-            return Mathf.Lerp(roadStartWidth / 2, roadStartWidth, nodeDimension / (columns * columnWidth));
+            return Mathf.Lerp(roadStartWidth / 2, roadStartWidth, nodeDimension / (valueGrid.Width * (int)valueGrid.cellSize));
         }
 
         private void SpawnRoad(float x, float y, float width, float height, bool isHorizontal)
@@ -128,24 +143,32 @@ namespace Demo
         {
             if (node.child1 == null && node.child2 == null)
             {
-                int plotsAlongWidth = Mathf.FloorToInt(node.width / columnWidth);
-                int plotsAlongHeight = Mathf.FloorToInt(node.height / rowWidth);
+                int plotsAlongWidth = Mathf.FloorToInt(node.width / (int)valueGrid.cellSize);
+                int plotsAlongHeight = Mathf.FloorToInt(node.height / (int)valueGrid.cellSize);
+                float offsetX = (node.width - plotsAlongWidth * ((int)valueGrid.cellSize + buildingSpacing)) / 2.0f;
+                float offsetY = (node.height - plotsAlongHeight * ((int)valueGrid.cellSize + buildingSpacing)) / 2.0f;
                 for (int w = 0; w < plotsAlongWidth; w++)
                 {
                     for (int h = 0; h < plotsAlongHeight; h++)
                     {
-                        GameObject buildingPrefab = buildingPrefabs[Random.Range(0, buildingPrefabs.Length)];
-                        GameObject newBuilding = Instantiate(buildingPrefab, transform);
-                        Vector3 newPosition = new Vector3(node.x + w * (columnWidth + buildingSpacing) + columnWidth / 2.0f, 0, node.y + h * (rowWidth + buildingSpacing) + rowWidth / 2.0f);
-                        newBuilding.transform.localPosition = newPosition;
-                        newBuilding.transform.localRotation = Quaternion.Euler(0, Random.Range(-10, 10), 0);
-                        SimpleStock stockScript = newBuilding.GetComponent<SimpleStock>();
-                        if (stockScript != null)
+                        // Calculate the position of the building at the center of the plot
+                        float buildingX = node.x + offsetX + w * ((int)valueGrid.cellSize + buildingSpacing) + (int)valueGrid.cellSize / 2.0f;
+                        float buildingY = node.y + offsetY + h * ((int)valueGrid.cellSize + buildingSpacing) + (int)valueGrid.cellSize / 2.0f;
+                        // Check if the building position intersects with any road
+                        if (!IntersectsRoad(buildingX, buildingY))
                         {
-                            int stockWidth = Random.Range(minStockWidth, Mathf.Min(maxStockWidth, plotsAlongWidth));
-                            int stockHeight = Random.Range(minStockHeight, Mathf.Min(maxStockHeight, plotsAlongHeight));
-                            stockScript.Initialize(stockWidth, stockHeight, stockScript.wallStyle, stockScript.roofStyle);
-                            stockScript.Generate(buildDelaySeconds);
+                            GameObject buildingPrefab = buildingPrefabs[Random.Range(0, buildingPrefabs.Length)];
+                            GameObject newBuilding = Instantiate(buildingPrefab, transform);
+                            newBuilding.transform.localPosition = new Vector3(buildingX, 0, buildingY);
+                            newBuilding.transform.localRotation = Quaternion.Euler(0, Random.Range(-10, 10), 0);
+                            SimpleStock stockScript = newBuilding.GetComponent<SimpleStock>();
+                            if (stockScript != null)
+                            {
+                                int stockWidth = Random.Range(1, Mathf.Min(5, plotsAlongWidth));
+                                int stockHeight = Random.Range(1, Mathf.Min(5, plotsAlongHeight));
+                                stockScript.Initialize(stockWidth, stockHeight, stockScript.wallStyle, stockScript.roofStyle);
+                                stockScript.Generate(buildDelaySeconds);
+                            }
                         }
                     }
                 }
@@ -157,10 +180,24 @@ namespace Demo
             }
         }
 
+        private bool IntersectsRoad(float x, float y)
+        {
+            // Check if the position intersects with any road
+            Collider[] colliders = Physics.OverlapBox(new Vector3(x, 0, y), new Vector3((int)valueGrid.cellSize / 2.0f, 1, (int)valueGrid.cellSize / 2.0f));
+            foreach (Collider collider in colliders)
+            {
+                if (collider.CompareTag("Road"))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void CreateCenterNode()
         {
-            float centerNodeX = (columns * columnWidth - centerNodeWidth) / 2;
-            float centerNodeY = (rows * rowWidth - centerNodeHeight) / 2;
+            float centerNodeX = (valueGrid.Width * (int)valueGrid.cellSize - centerNodeWidth) / 2;
+            float centerNodeY = (valueGrid.Depth * (int)valueGrid.cellSize - centerNodeHeight) / 2;
             GameObject centerBuilding = Instantiate(giantBuildingPrefab, new Vector3(centerNodeX + centerNodeWidth / 2, 0, centerNodeY + centerNodeHeight / 2), Quaternion.identity, transform);
             centerBuilding.transform.localScale = new Vector3(centerNodeWidth, giantBuildingPrefab.transform.localScale.y, centerNodeHeight);
         }
