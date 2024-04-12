@@ -4,23 +4,35 @@ namespace Demo
 {
     public class GridCity : MonoBehaviour
     {
+
+        public float cylinderHeight;
         public int rows = 10;
         public int columns = 10;
         public int rowWidth = 10;
         public int columnWidth = 10;
         public GameObject[] buildingPrefabs;
-        public GameObject debugPrefab; 
-        public GameObject noBuildZonePrefab; 
-        public int centralAreaWidth = 4;  
+        public GameObject debugPrefab;
+        public GameObject noBuildZonePrefab;
+
+        public GameObject largeCylinderPrefab;
+        public int centralAreaWidth = 4;
         public int centralAreaHeight = 4;
-        public int seed;  
+        public bool useRandomSeed = false;
+        public GenerationAlgorithm selectedAlgorithm = GenerationAlgorithm.MarchingSquares;
+        public int seed;
 
         private ValueGrid valueGrid;
+
+        public enum GenerationAlgorithm
+        {
+            MarchingSquares,
+            BSP
+        }
 
         void Start()
         {
             valueGrid = GetComponent<ValueGrid>();
-            Random.InitState(seed); 
+            InitializeSeed();
             valueGrid.InitializeGrid();
             GenerateCity();
         }
@@ -29,8 +41,21 @@ namespace Demo
         {
             if (Input.GetKeyDown(KeyCode.G))
             {
-                Random.InitState(seed);
+                InitializeSeed();
                 GenerateCity();
+            }
+        }
+
+        void InitializeSeed()
+        {
+            if (useRandomSeed)
+            {
+                seed = Random.Range(1000, 9999);
+                Random.InitState(seed);
+            }
+            else
+            {
+                Random.InitState(seed);
             }
         }
 
@@ -38,8 +63,24 @@ namespace Demo
         {
             valueGrid.InitializeGrid();
             DestroyChildren();
-            float noBuildProbability = Mathf.Clamp01((float)seed / 100000f);  
+            if (selectedAlgorithm == GenerationAlgorithm.BSP)
+            {
+                GenerateCityUsingBSP();
+            }
+            else
+            {
+                float noBuildProbability = Mathf.Clamp01((float)seed / 100000f);
+                UseMarchingSquares(noBuildProbability);
+            }
+            //center cylinder
+            int centerRow = rows / 2;
+            int centerCol = columns / 2;
+            Vector3 centerPosition = new Vector3(centerCol * columnWidth, 0, centerRow * rowWidth);
+            InstantiateLargeCylinder(centerPosition);
+        }
 
+        void UseMarchingSquares(float noBuildProbability)
+        {
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < columns; col++)
@@ -51,6 +92,48 @@ namespace Demo
                         PlaceBuildingOrSpace(index, position, noBuildProbability);
                     }
                 }
+            }
+        }
+
+        void GenerateCityUsingBSP()
+        {
+            int partitionSize = Mathf.Max(1, columns / 4);
+            PartitionArea(0, 0, columns, rows);
+            PlaceBuildingsAndSpaces();
+        }
+
+        void PlaceBuildingsAndSpaces()
+        {
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < columns; col++)
+                {
+                    Vector3 position = new Vector3(col * columnWidth, 0, row * rowWidth);
+                    if (!IsCentralArea(row, col))
+                    {
+                        float noBuildProbability = Mathf.Clamp01((float)seed / 100000f);
+                        int index = valueGrid.GetMarchingSquareIndex(col, row);
+                        PlaceBuildingOrSpace(index, position, noBuildProbability);
+                    }
+                }
+            }
+        }
+
+        void PartitionArea(int startX, int startY, int width, int height)
+        {
+            if (width < 2 || height < 2) return; 
+            bool splitHorizontally = (width < height) ? true : Random.value > 0.5;
+            if (splitHorizontally)
+            {
+                int split = Random.Range(1, height - 1); 
+                PartitionArea(startX, startY, width, split);
+                PartitionArea(startX, startY + split, width, height - split);
+            }
+            else
+            {
+                int split = Random.Range(1, width - 1); 
+                PartitionArea(startX, startY, split, height);
+                PartitionArea(startX + split, startY, width - split, height);
             }
         }
 
@@ -70,7 +153,8 @@ namespace Demo
             if (placeNoBuildZone)
             {
                 Instantiate(noBuildZonePrefab, position + centerOffset, Quaternion.identity, transform);
-                return; 
+                valueGrid.SetCell(GetCellPosition(position), -1); // Mark cell as no-building zone
+                return;
             }
 
             switch (index)
@@ -105,16 +189,17 @@ namespace Demo
         {
             GameObject buildingPrefab = buildingPrefabs[Random.Range(0, buildingPrefabs.Length)];
             Instantiate(buildingPrefab, position, Quaternion.identity, transform);
+            valueGrid.SetCell(GetCellPosition(position), 1); // Mark cell as building
         }
 
         void InstantiateBuildingAtSingleCorner(int index, Vector3 basePosition)
         {
             Vector3 offset = index switch
             {
-                1 => new Vector3(0, 0, rowWidth),  // Bottom-left
-                2 => new Vector3(columnWidth, 0, rowWidth),  // Bottom-right
-                4 => new Vector3(columnWidth, 0, 0),  // Top-right
-                8 => new Vector3(0, 0, 0),  // Top-left
+                1 => new Vector3(0, 0, rowWidth),
+                2 => new Vector3(columnWidth, 0, rowWidth),  
+                4 => new Vector3(columnWidth, 0, 0),
+                8 => new Vector3(0, 0, 0),  
                 _ => Vector3.zero
             };
             InstantiateBuilding(basePosition + offset);
@@ -132,6 +217,21 @@ namespace Demo
             {
                 DestroyImmediate(transform.GetChild(0).gameObject);
             }
+        }
+
+        Vector2Int GetCellPosition(Vector3 position)
+        {
+            int row = Mathf.FloorToInt(position.z / rowWidth);
+            int col = Mathf.FloorToInt(position.x / columnWidth);
+            return new Vector2Int(row, col);
+        }
+
+
+        void InstantiateLargeCylinder(Vector3 position)
+        {
+            Vector3 cylinderScale = new Vector3(1, cylinderHeight, 1);
+            GameObject largeCylinder = Instantiate(largeCylinderPrefab, position, Quaternion.identity, transform);
+            largeCylinder.transform.localScale = cylinderScale;
         }
     }
 }

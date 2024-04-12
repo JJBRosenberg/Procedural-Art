@@ -441,8 +441,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4a3bb68da96a0b46b33ef8e99bb0ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 7
-  columns: 7
+  cylinderHeight: 25
+  rows: 10
+  columns: 10
   rowWidth: 5
   columnWidth: 5
   buildingPrefabs:
@@ -450,9 +451,13 @@ MonoBehaviour:
   - {fileID: 746639827770723165, guid: 0af37a37411cd034d9d8cd24774f517a, type: 3}
   - {fileID: 746639827770723165, guid: 54c2a7d45d007404897f061979e26097, type: 3}
   debugPrefab: {fileID: 523042564}
-  noBuildZonePrefab: {fileID: 0}
+  noBuildZonePrefab: {fileID: 523042564}
+  largeCylinderPrefab: {fileID: 1304562022880760324, guid: 8fd24a5e79fb63747bb5f572d721c8c8,
+    type: 3}
   centralAreaWidth: 2
   centralAreaHeight: 2
+  useRandomSeed: 1
+  selectedAlgorithm: 0
   seed: 4
 --- !u!4 &1087066582
 Transform:

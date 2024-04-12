@@ -55,6 +55,14 @@ public class ValueGrid : MonoBehaviour
         return index;
     }
 
+    public void SetCell(Vector2Int cellPosition, float value)
+    {
+        if (InRange(cellPosition.x, cellPosition.y))
+        {
+            grid[cellPosition.x, cellPosition.y] = value;
+        }
+    }
+
     private bool InRange(int row, int col)
     {
         return row >= 0 && row < width && col >= 0 && col < depth;
