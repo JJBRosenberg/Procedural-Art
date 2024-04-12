@@ -10,23 +10,15 @@ public class ValueGrid : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("ValueGrid.cs: Press G to re-initialize the grid.");
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            InitializeGrid();
-            Debug.Log("ValueGrid: newly initialized. Press the BuildTrigger key to regenerate game objects");
-        }
+        InitializeGrid();
     }
 
     public void InitializeGrid()
     {
         grid = new float[width, depth];
-        float xOffset = Random.value;
-        float yOffset = Random.value;
+        float xOffset = Random.value * 1000;  // Large range to ensure variability
+        float yOffset = Random.value * 1000;  // Large range to ensure variability
+
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < depth; j++)
@@ -36,44 +28,35 @@ public class ValueGrid : MonoBehaviour
         }
     }
 
-    public bool GetRowCol(Vector3 worldPosition, out int row, out int col)
-    {
-        Vector3 localHit = transform.InverseTransformPoint(worldPosition);
-        row = (int)Mathf.Round(localHit.x / cellSize);
-        col = (int)Mathf.Round(localHit.z / cellSize);
-        return InRange(row, col);
-    }
-
-    public bool InRange(int row, int col)
-    {
-        return grid != null && row >= 0 && row < grid.GetLength(0) && col >= 0 && col < grid.GetLength(1);
-    }
-
-    public void SetCell(int row, int col, float value)
-    {
-        if (InRange(row, col))
-        {
-            grid[row, col] = value;
-        }
-    }
-
     public float GetCell(int row, int col)
     {
         if (InRange(row, col))
         {
             return grid[row, col];
         }
-        return 0;
+        return 0;  // Return 0 if out of range, could also throw an exception or handle differently
     }
 
-    // Added methods
     public bool IsCellOccupied(int row, int col)
     {
-        return GetCell(row, col) != 0;  // Assuming 0 means unoccupied
+        return GetCell(row, col) != 0;
     }
 
-    public void SetCellOccupied(int row, int col, bool occupied)
+    public int GetMarchingSquareIndex(int x, int y)
     {
-        SetCell(row, col, occupied ? 1 : 0);
+        if (x < 0 || y < 0 || x >= width - 1 || y >= depth - 1) return 0;
+
+        int index = 0;
+        if (IsCellOccupied(x, y + 1)) index |= 1;
+        if (IsCellOccupied(x + 1, y + 1)) index |= 2;
+        if (IsCellOccupied(x + 1, y)) index |= 4;
+        if (IsCellOccupied(x, y)) index |= 8;
+
+        return index;
+    }
+
+    private bool InRange(int row, int col)
+    {
+        return row >= 0 && row < width && col >= 0 && col < depth;
     }
 }
