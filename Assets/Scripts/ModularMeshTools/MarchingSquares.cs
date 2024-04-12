@@ -122,9 +122,9 @@ namespace Demo
             // generate the game objects from the grid
             // Loop over all square cells between the grid sample points:
             // (If grid is n x m, the number of square cells is (n-1) x (m-1).)
-            for (int i = 0; i < grid.Width - 1; i++)
+            for (int i = 0; i < grid.width - 1; i++)
             {
-                for (int j = 0; j < grid.Depth - 1; j++)
+                for (int j = 0; j < grid.depth - 1; j++)
                 {
                     int bitMask = GetBitMask(i, j);
 
@@ -139,9 +139,9 @@ namespace Demo
             if (debugPrefab != null)
             {
                 // Spawn some game objects to show where the empty cells are:
-                for (int i = 0; i < grid.Width; i++)
+                for (int i = 0; i < grid.width; i++)
                 {
-                    for (int j = 0; j < grid.Depth; j++)
+                    for (int j = 0; j < grid.depth; j++)
                     {
                         if (grid.GetCell(i, j) <= 0)
                         {

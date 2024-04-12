@@ -9,9 +9,9 @@ namespace Demo
         public int rowWidth = 10;
         public int columnWidth = 10;
         public GameObject[] buildingPrefabs;
-        public GameObject debugPrefab;
-        public GameObject cylinderPrefab; // GameObject for the cylinder
-        public float cylinderHeight = 20f; // Public variable for the height of the cylinder
+        public GameObject debugPrefab;  
+        public GameObject cylinderPrefab; 
+        public float cylinderHeight = 20f; 
 
         public float buildDelaySeconds = 0.1f;
         public int townCenterRows;
@@ -22,15 +22,16 @@ namespace Demo
         void Start()
         {
             valueGrid = GetComponent<ValueGrid>();
-            Generate();
+            valueGrid.InitializeGrid();  
+            GenerateCity();  
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.G))
             {
-                DestroyChildren();
-                Generate();
+                valueGrid.InitializeGrid();  
+                GenerateCity(); 
             }
         }
 
@@ -42,45 +43,25 @@ namespace Demo
             }
         }
 
-        void Generate()
+        void GenerateCity()
         {
-            int centerRow = (rows - townCenterRows) / 2 + townCenterRows / 2;
-            int centerCol = (columns - townCenterColumns) / 2 + townCenterColumns / 2;
-
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < columns; col++)
                 {
-                    Vector3 worldPosition = new Vector3(col * columnWidth, 0, row * rowWidth);
-
-                    if (IsInnerArea(row, col))
+                    Vector3 position = new Vector3(col * columnWidth, 0, row * rowWidth);
+                    if (!IsInnerArea(row, col))
                     {
-                        if (row == centerRow && col == centerCol)
+                        if (!valueGrid.IsCellOccupied(row, col))
                         {
-                            GameObject cylinder = Instantiate(cylinderPrefab, worldPosition, Quaternion.identity, transform);
-                            cylinder.transform.localScale = new Vector3(cylinder.transform.localScale.x, cylinderHeight, cylinder.transform.localScale.z);
-                        }
-                        else
-                        {
-                            Instantiate(debugPrefab, worldPosition, Quaternion.identity, transform);
+                            int buildingIndex = Random.Range(0, buildingPrefabs.Length);
+                            GameObject building = Instantiate(buildingPrefabs[buildingIndex], position, Quaternion.identity, transform);
+                            valueGrid.SetCellOccupied(row, col, true);
                         }
                     }
                     else
                     {
-                        int buildingIndex = Random.Range(0, buildingPrefabs.Length);
-                        GameObject newBuilding = Instantiate(buildingPrefabs[buildingIndex], transform);
-
-                        float offsetX = Random.Range(-columnWidth / 2f, columnWidth / 2f);
-                        float offsetZ = Random.Range(-rowWidth / 2f, rowWidth / 2f);
-                        Vector3 newPosition = new Vector3(col * columnWidth + offsetX, 0, row * rowWidth + offsetZ);
-
-                        newBuilding.transform.localPosition = newPosition;
-
-                        Shape shape = newBuilding.GetComponent<Shape>();
-                        if (shape != null)
-                        {
-                            shape.Generate(buildDelaySeconds);
-                        }
+                        Instantiate(debugPrefab, position, Quaternion.identity, transform);
                     }
                 }
             }
