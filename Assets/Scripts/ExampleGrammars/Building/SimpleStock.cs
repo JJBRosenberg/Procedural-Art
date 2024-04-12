@@ -23,8 +23,10 @@ namespace Demo
 
         private int doorWallIndex;
         private int currentHeightIndex = 0;
+        public int minHeight;
+        public int maxHeight;
 
-        public void Initialize(int Width, int Depth, GameObject[] wallStyle, GameObject doorPrefab, GameObject[] roofStyle, GameObject balconyPrefab, int currentHeightIndex = 0)
+        public void Initialize(int Width, int Depth, GameObject[] wallStyle, GameObject doorPrefab, GameObject[] roofStyle, GameObject balconyPrefab, int currentHeightIndex, int minHeight = 1, int maxHeight = 10)
         {
             this.Width = Width;
             this.Depth = Depth;
@@ -33,6 +35,8 @@ namespace Demo
             this.roofStyle = roofStyle;
             this.balconyPrefab = balconyPrefab;
             this.currentHeightIndex = currentHeightIndex;
+            this.minHeight = minHeight;
+            this.maxHeight = maxHeight;
 
             if (currentHeightIndex == 0)
             {
@@ -46,6 +50,18 @@ namespace Demo
 
         protected override void Execute()
         {
+            GenerateStock();
+        }
+
+        private void GenerateStock()
+        {
+            if (currentHeightIndex >= maxHeight)
+            {
+                Debug.Log("Maximum height reached, skipping generation for this stock.");
+                GenerateRoof();
+                return;
+            }
+
             for (int i = 0; i < 4; i++)
             {
                 Vector3 localPosition = Vector3.zero;
@@ -84,19 +100,25 @@ namespace Demo
                 newRow.Generate();
             }
 
-            float randomValue = RandomFloat();
-            if (randomValue < stockContinueChance)
+            currentHeightIndex++;
+
+            if (currentHeightIndex < minHeight || Random.value < stockContinueChance)
             {
                 SimpleStock nextStock = CreateSymbol<SimpleStock>("stock", new Vector3(0, 1, 0));
-                nextStock.Initialize(Width, Depth, wallStyle, doorPrefab, roofStyle, balconyPrefab, currentHeightIndex + 1);
+                nextStock.Initialize(Width, Depth, wallStyle, doorPrefab, roofStyle, balconyPrefab, currentHeightIndex, minHeight, maxHeight);
                 nextStock.Generate(buildDelay);
             }
             else
             {
-                SimpleRoof nextRoof = CreateSymbol<SimpleRoof>("roof", new Vector3(0, 1, 0));
-                nextRoof.Initialize(Width, Depth, roofStyle, wallStyle, balconyPrefab);
-                nextRoof.Generate(buildDelay);
+                GenerateRoof();
             }
+        }
+
+        private void GenerateRoof()
+        {
+            SimpleRoof nextRoof = CreateSymbol<SimpleRoof>("roof", new Vector3(0, 1, 0));
+            nextRoof.Initialize(Width, Depth, roofStyle, wallStyle, balconyPrefab);
+            nextRoof.Generate(buildDelay);
         }
     }
 }
