@@ -9,11 +9,13 @@ namespace Demo
         public int rowWidth = 10;
         public int columnWidth = 10;
         public GameObject[] buildingPrefabs;
-        public GameObject debugPrefab; 
+        public GameObject debugPrefab;
+        public GameObject cylinderPrefab; // GameObject for the cylinder
+        public float cylinderHeight = 20f; // Public variable for the height of the cylinder
 
         public float buildDelaySeconds = 0.1f;
-        public int townCenterRows; 
-        public int townCenterColumns; 
+        public int townCenterRows;
+        public int townCenterColumns;
 
         private ValueGrid valueGrid;
 
@@ -42,22 +44,29 @@ namespace Demo
 
         void Generate()
         {
+            int centerRow = (rows - townCenterRows) / 2 + townCenterRows / 2;
+            int centerCol = (columns - townCenterColumns) / 2 + townCenterColumns / 2;
+
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < columns; col++)
                 {
                     Vector3 worldPosition = new Vector3(col * columnWidth, 0, row * rowWidth);
 
-                    // Check if the current cell is within the inner area
                     if (IsInnerArea(row, col))
                     {
-                        Debug.Log($"Inner area at ({row}, {col})");
-                        // Instantiate debug cube in the inner area
-                        Instantiate(debugPrefab, worldPosition, Quaternion.identity, transform);
+                        if (row == centerRow && col == centerCol)
+                        {
+                            GameObject cylinder = Instantiate(cylinderPrefab, worldPosition, Quaternion.identity, transform);
+                            cylinder.transform.localScale = new Vector3(cylinder.transform.localScale.x, cylinderHeight, cylinder.transform.localScale.z);
+                        }
+                        else
+                        {
+                            Instantiate(debugPrefab, worldPosition, Quaternion.identity, transform);
+                        }
                     }
                     else
                     {
-                        // Instantiate buildings as usual
                         int buildingIndex = Random.Range(0, buildingPrefabs.Length);
                         GameObject newBuilding = Instantiate(buildingPrefabs[buildingIndex], transform);
 
