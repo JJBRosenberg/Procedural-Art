@@ -14,6 +14,8 @@ namespace Demo
         public GameObject debugPrefab;
         public GameObject noBuildZonePrefab;
 
+        public GameObject[] skyscraperPrefabs;
+
         public GameObject largeCylinderPrefab;
         public int centralAreaWidth = 4;
         public int centralAreaHeight = 4;
@@ -87,13 +89,32 @@ namespace Demo
                 {
                     Vector3 position = new Vector3(col * columnWidth, 0, row * rowWidth);
                     int index = valueGrid.GetMarchingSquareIndex(col, row);
-                    if (!IsCentralArea(row, col))
+
+                    // Check if the position is within the central area
+                    if (IsCentralArea(row, col))
                     {
-                        PlaceBuildingOrSpace(index, position, noBuildProbability);
+                        if (Random.value < 0.9f) // 90% chance to spawn a skyscraper
+                        {
+                            // Instantiate skyscraper prefab
+                            GameObject skyscraperPrefab = skyscraperPrefabs[Random.Range(0, skyscraperPrefabs.Length)];
+                            Instantiate(skyscraperPrefab, position, Quaternion.identity, transform);
+                            valueGrid.SetCell(GetCellPosition(position), 1); // Mark cell as building
+                            continue;
+                        }
+                        else
+                        {
+                            // Instantiate regular building prefab with 10% probability
+                            PlaceBuildingOrSpace(index, position, noBuildProbability);
+                            continue;
+                        }
                     }
+
+                    // For positions outside the central area, proceed as usual
+                    PlaceBuildingOrSpace(index, position, noBuildProbability);
                 }
             }
         }
+
 
         void GenerateCityUsingBSP()
         {
@@ -150,6 +171,18 @@ namespace Demo
             Vector3 centerOffset = new Vector3(columnWidth / 2, 0, rowWidth / 2);
             bool placeNoBuildZone = Random.value < noBuildProbability;
 
+            if (IsCentralArea((int)(position.z / rowWidth), (int)(position.x / columnWidth)))
+            {
+                if (Random.value < 0.9f) // 90% chance to spawn a skyscraper
+                {
+                    // Instantiate skyscraper prefab
+                    GameObject skyscraperPrefab = skyscraperPrefabs[Random.Range(0, skyscraperPrefabs.Length)];
+                    Instantiate(skyscraperPrefab, position + centerOffset, Quaternion.identity, transform);
+                    valueGrid.SetCell(GetCellPosition(position), 1); // Mark cell as building
+                    return;
+                }
+            }
+
             if (placeNoBuildZone)
             {
                 Instantiate(noBuildZonePrefab, position + centerOffset, Quaternion.identity, transform);
@@ -184,6 +217,7 @@ namespace Demo
                     break;
             }
         }
+
 
         void InstantiateBuilding(Vector3 position)
         {
