@@ -49,9 +49,8 @@ MonoBehaviour:
   Width: 4
   Depth: 4
   wallStyle:
-  - {fileID: -927199367670048503, guid: 14f82452b877a8945978b7090d0301f5, type: 3}
-  - {fileID: -927199367670048503, guid: 3a6b7aeb07151e147a3bf8b4a4b1f8b9, type: 3}
-  - {fileID: -927199367670048503, guid: 0dfe00013000a524e91c2fc61c13a4c8, type: 3}
+  - {fileID: 919132149155446097, guid: 0645c2154e781984393ada8f71302e7e, type: 3}
+  - {fileID: 6523436401361497205, guid: 61cb99f608a1eef47bdeb4fc6bea1f85, type: 3}
   doorPrefab: {fileID: -927199367670048503, guid: 216a5fbbaa1a14f48a699f4270cd1194,
     type: 3}
   roofStyle:
