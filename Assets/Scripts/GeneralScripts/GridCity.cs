@@ -4,6 +4,8 @@ namespace Demo
 {
     public class GridCity : MonoBehaviour
     {
+        [Range(0, 100)]
+        public float roadProabability;
 
         public float cylinderHeight;
         public int rows = 10;
@@ -65,14 +67,14 @@ namespace Demo
         {
             valueGrid.InitializeGrid();
             DestroyChildren();
+            float scaledNoBuildProbability = Mathf.Clamp01(roadProabability / 100); // Normalize the slider value to [0, 1]
             if (selectedAlgorithm == GenerationAlgorithm.BSP)
             {
                 GenerateCityUsingBSP();
             }
             else
             {
-                float noBuildProbability = Mathf.Clamp01((float)seed / 100000f);
-                UseMarchingSquares(noBuildProbability);
+                UseMarchingSquares(scaledNoBuildProbability);
             }
             //center cylinder
             int centerRow = rows / 2;
