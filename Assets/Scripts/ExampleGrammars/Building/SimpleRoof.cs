@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Demo
 {
     public class SimpleRoof : Shape
     {
-        // grammar rule probabilities:
         const float roofContinueChance = 0.5f;
 
         private int currentHeightIndex = 0;
@@ -13,15 +13,22 @@ namespace Demo
 
         GameObject[] roofStyle;
         GameObject[] wallStyle;
-        GameObject doorStyle;
-        GameObject balconyPrefab; // Change to single GameObject for balconyPrefab
+        GameObject balconyPrefab;
 
-        // (offset) values for the next layer:
         int newWidth;
         int newDepth;
 
-        // Define the balcony chance variable
         const float balconyChanceAbove2 = 0.3f;
+        private LODGroup lodGroup;
+
+        private void Awake()
+        {
+            lodGroup = GetComponentInParent<LODGroup>() ?? GetComponent<LODGroup>();
+            if (lodGroup == null)
+            {
+                Debug.LogError("LODGroup component not found on the GameObject or its parents.");
+            }
+        }
 
         public void Initialize(int Width, int Depth, GameObject[] roofStyle, GameObject[] wallStyle, GameObject balconyPrefab, int currentHeightIndex = 0)
         {
@@ -33,7 +40,6 @@ namespace Demo
             this.currentHeightIndex = currentHeightIndex;
         }
 
-
         protected override void Execute()
         {
             if (Width == 0 || Depth == 0)
@@ -41,77 +47,103 @@ namespace Demo
 
             newWidth = Width;
             newDepth = Depth;
-
-            CreateFlatRoofPart();
-            CreateNextPart();
+            List<Renderer> allRenderers = new List<Renderer>();
+            CreateFlatRoofPart(allRenderers);
+            CreateNextPart(allRenderers);
+            AddRenderersToLODGroup(allRenderers);
         }
 
-        void CreateFlatRoofPart()
+        void CreateFlatRoofPart(List<Renderer> allRenderers)
         {
-            // Randomly create two roof strips in depth direction or in width direction:
             int side = RandomInt(2);
             SimpleRow flatRoof;
 
             switch (side)
             {
-                // Add two roof strips in depth direction
                 case 0:
                     for (int i = 0; i < 2; i++)
                     {
                         flatRoof = CreateSymbol<SimpleRow>("roofStrip", new Vector3((Width - 1) * (i - 0.5f), 0, 0));
                         flatRoof.Initialize(Depth, roofStyle);
                         flatRoof.Generate();
+                        Renderer[] rowRenderers = flatRoof.GetComponentsInChildren<Renderer>();
+                        allRenderers.AddRange(rowRenderers);
                     }
                     newWidth -= 2;
                     break;
-                // Add two roof strips in width direction
                 case 1:
                     for (int i = 0; i < 2; i++)
                     {
                         flatRoof = CreateSymbol<SimpleRow>("roofStrip", new Vector3(0, 0, (Depth - 1) * (i - 0.5f)));
                         flatRoof.Initialize(Width, roofStyle, new Vector3(1, 0, 0));
                         flatRoof.Generate();
+                        Renderer[] rowRenderers = flatRoof.GetComponentsInChildren<Renderer>();
+                        allRenderers.AddRange(rowRenderers);
                     }
                     newDepth -= 2;
                     break;
             }
         }
 
-        void CreateNextPart()
+        void CreateNextPart(List<Renderer> allRenderers)
         {
-            // randomly continue with a roof or a stock:
             if (newWidth <= 0 || newDepth <= 0)
                 return;
 
-            // Check if the current height index is above a threshold for spawning balconies
             bool spawnBalcony = currentHeightIndex > 2 && Random.value < balconyChanceAbove2;
 
             if (spawnBalcony)
-            { // Create a balcony
+            {
                 SimpleRow balcony = CreateSymbol<SimpleRow>("balcony", Vector3.zero);
-                GameObject[] balconyPrefabArray = { balconyPrefab }; // Convert balconyPrefab to an array
-                balcony.Initialize(Width, balconyPrefabArray); // Corrected parameter here
+                GameObject[] balconyPrefabArray = { balconyPrefab };
+                balcony.Initialize(Width, balconyPrefabArray);
                 balcony.Generate();
+                Renderer[] rowRenderers = balcony.GetComponentsInChildren<Renderer>();
+                allRenderers.AddRange(rowRenderers);
             }
             else
-            { // Continue with the roof or a stock
+            {
                 float randomValue = RandomFloat();
                 if (randomValue < roofContinueChance)
-                { // continue with the roof
+                {
                     SimpleRoof nextRoof = CreateSymbol<SimpleRoof>("roof");
                     nextRoof.Initialize(newWidth, newDepth, roofStyle, wallStyle, balconyPrefab);
                     nextRoof.Generate(buildDelay);
+                    Renderer[] rowRenderers = nextRoof.GetComponentsInChildren<Renderer>();
+                    allRenderers.AddRange(rowRenderers);
                 }
                 else
-                { // continue with a stock
+                {
                     SimpleStock nextStock = CreateSymbol<SimpleStock>("stock");
-                    // Assuming doorPrefab is set to null as it's not managed or relevant for roofs
-                    // Ensure the order and types of arguments match the expected signature
                     nextStock.Initialize(newWidth, newDepth, wallStyle, null, roofStyle, balconyPrefab, currentHeightIndex + 1);
                     nextStock.Generate(buildDelay);
+                    Renderer[] rowRenderers = nextStock.GetComponentsInChildren<Renderer>();
+                    allRenderers.AddRange(rowRenderers);
                 }
             }
         }
 
+        private void AddRenderersToLODGroup(List<Renderer> renderers)
+        {
+            if (lodGroup == null)
+            {
+                Debug.LogWarning("LODGroup component not found on the GameObject.");
+                return;
+            }
+
+            LOD[] lods = lodGroup.GetLODs();
+            if (lods.Length == 0)
+            {
+                Debug.LogWarning("No LOD levels found on the LODGroup.");
+                return;
+            }
+
+            List<Renderer> updatedRenderers = new List<Renderer>(lods[0].renderers);
+            updatedRenderers.AddRange(renderers);
+            lods[0].renderers = updatedRenderers.ToArray();
+
+            lodGroup.SetLODs(lods);
+            lodGroup.RecalculateBounds();
+        }
     }
 }

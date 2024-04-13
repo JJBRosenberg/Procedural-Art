@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Demo
 {
@@ -7,29 +8,34 @@ namespace Demo
         const float stockContinueChance = 0.5f;
         const float balconyChanceAbove2 = 0.3f;
 
-        [SerializeField]
-        int Width;
-        [SerializeField]
-        int Depth;
+        [SerializeField] int Width;
+        [SerializeField] int Depth;
 
-        [SerializeField]
-        GameObject[] wallStyle;
-        [SerializeField]
-        GameObject doorPrefab;
-        [SerializeField]
-        GameObject[] roofStyle;
-        [SerializeField]
-        GameObject balconyPrefab;
+        [SerializeField] GameObject[] wallStyle;
+        [SerializeField] GameObject doorPrefab;
+        [SerializeField] GameObject[] roofStyle;
+        [SerializeField] GameObject balconyPrefab;
 
         private int doorWallIndex;
         private int currentHeightIndex = 0;
         public int minHeight;
         public int maxHeight;
 
-        public void Initialize(int Width, int Depth, GameObject[] wallStyle, GameObject doorPrefab, GameObject[] roofStyle, GameObject balconyPrefab, int currentHeightIndex, int minHeight = 1, int maxHeight = 10)
+        private LODGroup lodGroup;
+
+        private void Awake()
         {
-            this.Width = Width;
-            this.Depth = Depth;
+            lodGroup = GetComponentInParent<LODGroup>() ?? GetComponent<LODGroup>();
+            if (lodGroup == null)
+            {
+                Debug.LogError("LODGroup component not found on the GameObject or its parents.");
+            }
+        }
+
+        public void Initialize(int width, int depth, GameObject[] wallStyle, GameObject doorPrefab, GameObject[] roofStyle, GameObject balconyPrefab, int currentHeightIndex, int minHeight = 1, int maxHeight = 10)
+        {
+            Width = width;
+            Depth = depth;
             this.wallStyle = wallStyle;
             this.doorPrefab = doorPrefab;
             this.roofStyle = roofStyle;
@@ -61,6 +67,8 @@ namespace Demo
                 GenerateRoof();
                 return;
             }
+
+            List<Renderer> allRenderers = new List<Renderer>();
 
             for (int i = 0; i < 4; i++)
             {
@@ -97,8 +105,15 @@ namespace Demo
                     newRow = CreateSymbol<SimpleRow>("wall", localPosition, Quaternion.Euler(0, i * 90, 0));
                     newRow.Initialize(i % 2 == 1 ? Width : Depth, wallStyle);
                 }
+
                 newRow.Generate();
+
+                Renderer[] rowRenderers = newRow.GetComponentsInChildren<Renderer>();
+                allRenderers.AddRange(rowRenderers);
             }
+
+            // Add all renderers to the LOD group
+            AddRenderersToLODGroup(allRenderers);
 
             currentHeightIndex++;
 
@@ -106,7 +121,7 @@ namespace Demo
             {
                 SimpleStock nextStock = CreateSymbol<SimpleStock>("stock", new Vector3(0, 1, 0));
                 nextStock.Initialize(Width, Depth, wallStyle, doorPrefab, roofStyle, balconyPrefab, currentHeightIndex, minHeight, maxHeight);
-                nextStock.Generate(buildDelay);
+                nextStock.Generate();
             }
             else
             {
@@ -117,8 +132,31 @@ namespace Demo
         private void GenerateRoof()
         {
             SimpleRoof nextRoof = CreateSymbol<SimpleRoof>("roof", new Vector3(0, 1, 0));
-            nextRoof.Initialize(Width, Depth, roofStyle, wallStyle, balconyPrefab);
-            nextRoof.Generate(buildDelay);
+            nextRoof.Initialize(Width, Depth, roofStyle, wallStyle, balconyPrefab, currentHeightIndex = 0);
+            nextRoof.Generate();
+        }
+
+        private void AddRenderersToLODGroup(List<Renderer> renderers)
+        {
+            if (lodGroup == null)
+            {
+                Debug.LogWarning("LODGroup component not found on the GameObject.");
+                return;
+            }
+
+            LOD[] lods = lodGroup.GetLODs();
+            if (lods.Length == 0)
+            {
+                Debug.LogWarning("No LOD levels found on the LODGroup.");
+                return;
+            }
+
+            List<Renderer> updatedRenderers = new List<Renderer>(lods[0].renderers);
+            updatedRenderers.AddRange(renderers);
+            lods[0].renderers = updatedRenderers.ToArray();
+
+            lodGroup.SetLODs(lods);
+            lodGroup.RecalculateBounds();
         }
     }
 }

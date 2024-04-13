@@ -422,6 +422,7 @@ GameObject:
   - component: {fileID: 1087066581}
   - component: {fileID: 1087066584}
   - component: {fileID: 1087066583}
+  - component: {fileID: 1087066585}
   m_Layer: 0
   m_Name: GridCitySpawner
   m_TagString: Untagged
@@ -450,6 +451,7 @@ MonoBehaviour:
   - {fileID: 8956201480844612614, guid: 91f189080e803824bb97716d7c194215, type: 3}
   - {fileID: 746639827770723165, guid: 0af37a37411cd034d9d8cd24774f517a, type: 3}
   - {fileID: 746639827770723165, guid: 54c2a7d45d007404897f061979e26097, type: 3}
+  - {fileID: 746639827770723165, guid: f7e0dafdd4350024cacb769d376078c9, type: 3}
   debugPrefab: {fileID: 523042564}
   noBuildZonePrefab: {fileID: 523042564}
   skyscraperPrefabs:
@@ -513,6 +515,30 @@ MonoBehaviour:
   width: 10
   depth: 10
   cellSize: 6
+--- !u!205 &1087066585
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087066580}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.6
+    fadeTransitionWidth: 0
+    renderers: []
+  - screenRelativeHeight: 0.3
+    fadeTransitionWidth: 0
+    renderers: []
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  m_Enabled: 1
 --- !u!1 &1337884392
 GameObject:
   m_ObjectHideFlags: 0
