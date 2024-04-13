@@ -5,7 +5,7 @@ namespace Demo
     public class GridCity : MonoBehaviour
     {
         [Range(0, 100)]
-        public float roadProabability;
+        public float roadProabability = 50;
 
         public float cylinderHeight;
         public int rows = 10;

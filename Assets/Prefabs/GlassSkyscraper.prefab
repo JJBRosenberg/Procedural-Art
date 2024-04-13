@@ -12,9 +12,8 @@ GameObject:
   - component: {fileID: 8956201480844612613}
   - component: {fileID: 8956201480844612612}
   - component: {fileID: 8956201480844612615}
-  - component: {fileID: 2502000200414202621}
   m_Layer: 0
-  m_Name: Building
+  m_Name: GlassSkyscraper
   m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,8 +59,8 @@ MonoBehaviour:
   - {fileID: -927199367670048503, guid: d47dbadf5ffe0474eb6be594ce5e3849, type: 3}
   balconyPrefab: {fileID: -927199367670048503, guid: 5a450e78da68c1040b9f9f72bb96ecdb,
     type: 3}
-  minHeight: 5
-  maxHeight: 9
+  minHeight: 18
+  maxHeight: 24
 --- !u!114 &8956201480844612612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,27 +88,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 0
---- !u!205 &2502000200414202621
-LODGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8956201480844612614}
-  serializedVersion: 2
-  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
-  m_Size: 1
-  m_FadeMode: 0
-  m_AnimateCrossFading: 0
-  m_LastLODIsBillboard: 0
-  m_LODs:
-  - screenRelativeHeight: 0.6
-    fadeTransitionWidth: 0
-    renderers: []
-  - screenRelativeHeight: 0.3
-    fadeTransitionWidth: 0
-    renderers: []
-  - screenRelativeHeight: 0.1
-    fadeTransitionWidth: 0
-    renderers: []
-  m_Enabled: 0
