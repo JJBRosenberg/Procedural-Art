@@ -21,7 +21,7 @@ namespace Demo
         public GameObject[] centralPrefabs;
 
         public GameObject debugPrefab;
-        public GameObject noBuildZonePrefab;
+        public GameObject roadPrefab;
 
         public GameObject largeCylinderPrefab;
         public int centralAreaWidth = 4;
@@ -103,7 +103,7 @@ namespace Demo
 
         void GenerateCityUsingBSP(int startX, int startY, int width, int height)
         {
-            if (width < 1 || height < 1) return;
+            if (width < centralAreaWidth || height < centralAreaHeight) return;
 
             bool isBuilding = Random.value < Mathf.Clamp01(roadProbability / 100);
             Vector3 position = new Vector3(startX * columnWidth, 0, startY * rowWidth);
@@ -118,10 +118,11 @@ namespace Demo
             }
             else
             {
-                Instantiate(noBuildZonePrefab, position, Quaternion.identity, transform).transform.localScale = scale;
+                GameObject roadInstance = Instantiate(roadPrefab, position, Quaternion.identity, transform);
+                roadInstance.transform.localScale = scale;
             }
 
-            if (width == 1 && height == 1) return; // Base case for recursion
+            if (width == centralAreaWidth && height == centralAreaHeight) return; // Base case for recursion
 
             bool splitHorizontally = Random.value > 0.5;
             int split = Random.Range(1, splitHorizontally ? height : width);
@@ -150,7 +151,9 @@ namespace Demo
 
             if (Random.value < noBuildProbability)
             {
-                Instantiate(noBuildZonePrefab, position, Quaternion.identity, transform);
+                position.y += 0.1f;
+                GameObject roadInstance = Instantiate(roadPrefab, position, Quaternion.identity, transform);
+                roadInstance.transform.localScale = new Vector3(columnWidth / 10f, 1, rowWidth / 10f);
             }
             else
             {

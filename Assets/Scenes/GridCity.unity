@@ -2528,7 +2528,8 @@ MonoBehaviour:
   - {fileID: 8956201480844612614, guid: 726653ec29f3adc4eacfad743f842802, type: 3}
   - {fileID: 8956201480844612614, guid: d9df2149408f071449e73009b4137498, type: 3}
   debugPrefab: {fileID: 523042564}
-  noBuildZonePrefab: {fileID: 523042564}
+  roadPrefab: {fileID: 1332045345741544357, guid: 6d8531ed03dd2eb4d9d13376417e6d6f,
+    type: 3}
   largeCylinderPrefab: {fileID: 1304562022880760324, guid: 8fd24a5e79fb63747bb5f572d721c8c8,
     type: 3}
   centralAreaWidth: 4
