@@ -12,6 +12,7 @@ namespace Demo
         public int columns = 10;
         public int rowWidth = 10;
         public int columnWidth = 10;
+        public GameObject waterPrefab;
 
         public GameObject[] northPrefabs;
         public GameObject[] eastPrefabs;
@@ -75,7 +76,7 @@ namespace Demo
             float scaledNoBuildProbability = Mathf.Clamp01(roadProbability / 100);
             if (selectedAlgorithm == GenerationAlgorithm.BSP)
             {
-                GenerateCityUsingBSP();
+                GenerateCityUsingBSP(0, 0, columns, rows);
             }
             else
             {
@@ -89,7 +90,7 @@ namespace Demo
             {
                 for (int col = 0; col < columns; col++)
                 {
-                    Vector3 position = new Vector3(col * columnWidth, 0, row * rowWidth);
+                    Vector3 position = new Vector3(col * columnWidth, col < columns / 4 ? 0.1f : 0, row * rowWidth);
                     if (IsCentralArea(row, col))
                     {
                         InstantiateRandomPrefab(centralPrefabs, position);
@@ -100,36 +101,58 @@ namespace Demo
             }
         }
 
-        void GenerateCityUsingBSP()
+        void GenerateCityUsingBSP(int startX, int startY, int width, int height)
         {
-            PartitionArea(0, 0, columns, rows);
-        }
+            if (width < 1 || height < 1) return;
 
-        void PartitionArea(int startX, int startY, int width, int height)
-        {
-            if (width < 2 || height < 2) return;
-            bool splitHorizontally = (width > height) ? Random.value > 0.5 : false;
-            int split = Random.Range(1, (splitHorizontally ? height : width) - 1);
-            if (splitHorizontally)
+            bool isBuilding = Random.value < Mathf.Clamp01(roadProbability / 100);
+            Vector3 position = new Vector3(startX * columnWidth, 0, startY * rowWidth);
+            Vector3 scale = new Vector3(width * columnWidth / 10.0f, 1, height * rowWidth / 10.0f);
+
+            if (isBuilding)
             {
-                PartitionArea(startX, startY, width, split);
-                PartitionArea(startX, startY + split, width, height - split);
+                GameObject[] prefabs = GetPrefabArrayForPosition(startY, startX);
+                GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
+                GameObject instance = Instantiate(prefab, position, Quaternion.identity, transform);
+                instance.transform.localScale = scale;
             }
             else
             {
-                PartitionArea(startX, startY, split, height);
-                PartitionArea(startX + split, startY, width - split, height);
+                Instantiate(noBuildZonePrefab, position, Quaternion.identity, transform).transform.localScale = scale;
+            }
+
+            if (width == 1 && height == 1) return; // Base case for recursion
+
+            bool splitHorizontally = Random.value > 0.5;
+            int split = Random.Range(1, splitHorizontally ? height : width);
+
+            if (splitHorizontally)
+            {
+                GenerateCityUsingBSP(startX, startY, width, split);
+                GenerateCityUsingBSP(startX, startY + split, width, height - split);
+            }
+            else
+            {
+                GenerateCityUsingBSP(startX, startY, split, height);
+                GenerateCityUsingBSP(startX + split, startY, width - split, height);
             }
         }
 
         void PlaceBuildingOrSpace(int row, int col, Vector3 position, float noBuildProbability)
         {
+            if (col < columns / 4 && selectedAlgorithm == GenerationAlgorithm.MarchingSquares)
+            {
+                position.y += 0.1f;
+                GameObject waterInstance = Instantiate(waterPrefab, position, Quaternion.identity, transform);
+                waterInstance.transform.localScale = new Vector3(columnWidth / 10f, 1, rowWidth / 10f);
+                return;
+            }
+
             if (Random.value < noBuildProbability)
             {
                 Instantiate(noBuildZonePrefab, position, Quaternion.identity, transform);
-                return;
             }
-            if (!IsCentralArea(row, col))
+            else
             {
                 InstantiateRandomPrefab(GetPrefabArrayForPosition(row, col), position);
             }

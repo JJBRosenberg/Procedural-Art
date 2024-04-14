@@ -957,6 +957,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ProceduralSimpleBuilding
       objectReference: {fileID: 0}
+    - target: {fileID: 3604920485432597347, guid: fee6c2ac503a81e4cb074a72365b79d0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3604920485432597358, guid: fee6c2ac503a81e4cb074a72365b79d0,
         type: 3}
       propertyPath: m_RootOrder
@@ -1103,7 +1108,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 523042564}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.113969, y: 0.483, z: -2.2029624}
+  m_LocalPosition: {x: -18.08, y: 0.483, z: -2.2029624}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2489,7 +2494,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1087066581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2508,6 +2513,8 @@ MonoBehaviour:
   columns: 10
   rowWidth: 5
   columnWidth: 5
+  waterPrefab: {fileID: 1332045345741544357, guid: b71a6699ffb9c8a4fb82aec42f591891,
+    type: 3}
   northPrefabs:
   - {fileID: 746639827770723165, guid: 0af37a37411cd034d9d8cd24774f517a, type: 3}
   eastPrefabs:
