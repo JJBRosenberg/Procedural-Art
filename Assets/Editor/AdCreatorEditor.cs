@@ -4,7 +4,9 @@ using UnityEditor;
 public class AdCreatorEditor : EditorWindow
 {
     private GameObject prefabToSpawn;
-    private adCreator spawner;
+    private Vector3? firstClickPosition = null;
+    private Vector3 secondClickPosition;
+    private bool isAwaitingSecondClick = false;
 
     [MenuItem("Tools/Ad Creator Editor")]
     public static void ShowWindow()
@@ -12,27 +14,60 @@ public class AdCreatorEditor : EditorWindow
         GetWindow<AdCreatorEditor>("Ad Creator");
     }
 
-    void OnEnable()
-    {
-        // Try to find an existing spawner in the scene
-        spawner = FindObjectOfType<adCreator>();
-        if (spawner == null)
-        {
-            // If none found, create a new GameObject with the spawner
-            GameObject spawnerObj = new GameObject("GameViewPrefabSpawner");
-            spawner = spawnerObj.AddComponent<adCreator>();
-            spawner.mainCamera = Camera.main;  // Automatically assign the main camera
-        }
-    }
-
     void OnGUI()
     {
         GUILayout.Label("Configure Prefab Spawner", EditorStyles.boldLabel);
-        prefabToSpawn = (GameObject)EditorGUILayout.ObjectField("Prefab to Spawn", prefabToSpawn, typeof(GameObject), false);
+        prefabToSpawn = (GameObject)EditorGUILayout.ObjectField("Plane Prefab to Spawn", prefabToSpawn, typeof(GameObject), false);
 
-        if (prefabToSpawn != null && spawner != null)
+        if (GUILayout.Button("Start Placement"))
         {
-            spawner.prefabToSpawn = prefabToSpawn;  // Update the prefab on the spawner
+            if (prefabToSpawn == null)
+            {
+                EditorUtility.DisplayDialog("Prefab Not Set", "Please assign a plane prefab to spawn.", "OK");
+                return;
+            }
+            SceneView.duringSceneGui += OnSceneGUI;
+            firstClickPosition = null;
+            isAwaitingSecondClick = false;
         }
+    }
+
+    void OnSceneGUI(SceneView sceneView)
+    {
+        if (Event.current.type == EventType.MouseDown && Event.current.button == 2) // Changed to middle mouse button
+        {
+            Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (firstClickPosition == null)
+                {
+                    firstClickPosition = hit.point;
+                    isAwaitingSecondClick = true;
+                    EditorUtility.DisplayDialog("First Point Set", "Now click the opposite corner of the plane.", "OK");
+                }
+                else
+                {
+                    secondClickPosition = hit.point;
+                    SpawnPlane();
+                    SceneView.duringSceneGui -= OnSceneGUI;
+                }
+            }
+
+            Event.current.Use(); // Consume the event so it doesn't propagate further
+        }
+    }
+
+    private void SpawnPlane()
+    {
+        Vector3 center = (firstClickPosition.Value + secondClickPosition) * 0.5f;
+        Vector3 size = new Vector3(Mathf.Abs(secondClickPosition.x - firstClickPosition.Value.x),
+                                   0,
+                                   Mathf.Abs(secondClickPosition.z - firstClickPosition.Value.z));
+        GameObject planeInstance = Instantiate(prefabToSpawn, center, Quaternion.identity);
+        planeInstance.transform.localScale = new Vector3(size.x, 1, size.z); // Assuming the prefab is 1x1 units
+        firstClickPosition = null;
+        isAwaitingSecondClick = false;
     }
 }
