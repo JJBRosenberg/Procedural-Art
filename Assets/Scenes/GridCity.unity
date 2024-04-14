@@ -2489,7 +2489,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1087066581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2502,29 +2502,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4a3bb68da96a0b46b33ef8e99bb0ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roadProabability: 45
+  roadProbability: 50
   cylinderHeight: 25
   rows: 10
   columns: 10
   rowWidth: 5
   columnWidth: 5
-  buildingPrefabs:
-  - {fileID: 8956201480844612614, guid: 91f189080e803824bb97716d7c194215, type: 3}
+  northPrefabs:
   - {fileID: 746639827770723165, guid: 0af37a37411cd034d9d8cd24774f517a, type: 3}
-  - {fileID: 746639827770723165, guid: 54c2a7d45d007404897f061979e26097, type: 3}
+  eastPrefabs:
+  - {fileID: 8956201480844612614, guid: 726653ec29f3adc4eacfad743f842802, type: 3}
+  southPrefabs:
   - {fileID: 746639827770723165, guid: f7e0dafdd4350024cacb769d376078c9, type: 3}
-  debugPrefab: {fileID: 523042564}
-  noBuildZonePrefab: {fileID: 523042564}
-  skyscraperPrefabs:
+  westPrefabs:
+  - {fileID: 8956201480844612614, guid: 91f189080e803824bb97716d7c194215, type: 3}
+  centralPrefabs:
   - {fileID: 8956201480844612614, guid: 9d8518de542d6c04393e161471f50669, type: 3}
   - {fileID: 8956201480844612614, guid: 726653ec29f3adc4eacfad743f842802, type: 3}
+  - {fileID: 8956201480844612614, guid: d9df2149408f071449e73009b4137498, type: 3}
+  debugPrefab: {fileID: 523042564}
+  noBuildZonePrefab: {fileID: 523042564}
   largeCylinderPrefab: {fileID: 1304562022880760324, guid: 8fd24a5e79fb63747bb5f572d721c8c8,
     type: 3}
-  centralAreaWidth: 3
-  centralAreaHeight: 3
+  centralAreaWidth: 4
+  centralAreaHeight: 4
   useRandomSeed: 1
-  selectedAlgorithm: 0
   seed: 4
+  selectedAlgorithm: 0
 --- !u!4 &1087066582
 Transform:
   m_ObjectHideFlags: 0
