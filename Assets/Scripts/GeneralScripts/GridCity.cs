@@ -7,6 +7,9 @@ namespace Demo
         [Range(0, 100)]
         public float roadProbability = 50;
 
+        [Range(0, 100)]
+        public float customBuildingProbability;
+
         public float cylinderHeight;
         public int rows = 10;
         public int columns = 10;
@@ -16,6 +19,7 @@ namespace Demo
 
         private bool bigPrefabSpawned = false;
         public GameObject bigPrefab;
+        public GameObject customBuilding;
         public GameObject[] northPrefabs;
         public GameObject[] eastPrefabs;
         public GameObject[] southPrefabs;
@@ -93,7 +97,7 @@ namespace Demo
             {
                 for (int col = 0; col < columns; col++)
                 {
-                    Vector3 position = new Vector3(col * columnWidth, col < columns / 4 ? 0.1f : 0, row * rowWidth);
+                    Vector3 position = new Vector3(col * columnWidth, 0, row * rowWidth);
                     if (IsExactCenterCell(row, col) && !bigPrefabSpawned)
                     {
                         Instantiate(bigPrefab, position, Quaternion.identity, transform);
@@ -103,6 +107,18 @@ namespace Demo
                     if (IsCentralArea(row, col))
                     {
                         InstantiateRandomPrefab(centralPrefabs, position);
+                        continue;
+                    }
+                    if (col < columns / 4)  // Adjusted condition to exclude west water area for custom buildings
+                    {
+                        position.y += 0.1f;
+                        GameObject waterInstance = Instantiate(waterPrefab, position, Quaternion.identity, transform);
+                        waterInstance.transform.localScale = new Vector3(columnWidth / 10f, 1, rowWidth / 10f);
+                        continue;
+                    }
+                    if (Random.value < customBuildingProbability / 100)
+                    {
+                        PlaceCustomBuildings(position);
                         continue;
                     }
                     PlaceBuildingOrSpace(row, col, position, noBuildProbability);
@@ -211,6 +227,15 @@ namespace Demo
             int centralColStart = (columns - centralAreaWidth) / 2;
             return row >= centralRowStart && row < centralRowStart + centralAreaHeight &&
                    col >= centralColStart && col < centralColStart + centralAreaWidth;
+        }
+        void PlaceCustomBuildings(Vector3 position)
+        {
+            // Adjust position to fit two buildings side by side within the same cell
+            Vector3 position1 = position + new Vector3(-columnWidth / 4, 0, 0); // Shift first building to the left
+            Vector3 position2 = position + new Vector3(columnWidth / 4, 0, 0);  // Shift second building to the right
+
+            Instantiate(customBuilding, position1, Quaternion.identity, transform);
+            Instantiate(customBuilding, position2, Quaternion.identity, transform);
         }
 
         void DestroyChildren()

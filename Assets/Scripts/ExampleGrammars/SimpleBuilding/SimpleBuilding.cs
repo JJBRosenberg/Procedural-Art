@@ -24,6 +24,7 @@ namespace Demo
             roofPrefabs = pRoofPrefabs;
             minHeight = pMinHeight;
             maxHeight = pMaxHeight;
+
         }
 
         GameObject ChooseRandom(GameObject[] choices)

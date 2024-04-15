@@ -5,7 +5,7 @@ namespace Demo
 {
     public class SimpleStock : Shape
     {
-        const float stockContinueChance = 0.5f;
+        public float stockContinueChance = 0.25f;
         const float balconyChanceAbove2 = 0.3f;
 
         [SerializeField] int Width;

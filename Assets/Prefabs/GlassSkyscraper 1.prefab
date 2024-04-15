@@ -58,8 +58,8 @@ MonoBehaviour:
   - {fileID: -927199367670048503, guid: d47dbadf5ffe0474eb6be594ce5e3849, type: 3}
   balconyPrefab: {fileID: -927199367670048503, guid: 5a450e78da68c1040b9f9f72bb96ecdb,
     type: 3}
-  minHeight: 18
-  maxHeight: 24
+  minHeight: 22
+  maxHeight: 27
 --- !u!114 &8956201480844612612
 MonoBehaviour:
   m_ObjectHideFlags: 0
