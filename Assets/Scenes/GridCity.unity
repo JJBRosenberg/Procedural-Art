@@ -409,6 +409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -648,6 +649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -4042,6 +4044,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -5107,6 +5110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -5282,6 +5286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -5550,6 +5555,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -5918,6 +5924,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -12374,6 +12381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -12630,6 +12638,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -19044,6 +19053,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -19509,6 +19519,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -21374,6 +21385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -21499,6 +21511,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -23304,6 +23317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -31125,7 +31139,7 @@ GameObject:
   - component: {fileID: 1524501146}
   - component: {fileID: 1524501145}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: AdSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31140,12 +31154,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1524501144}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9dbf0fa6338b039468e399fcfa16870b, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c97cf9c95f9ca541a14166a833599b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1171846672}
-  prefabToSpawn: {fileID: 5958484478057320481, guid: bbcca9ad7567183409c8cdbd86a139de,
+  adPrefab: {fileID: 5958484478057320481, guid: bbcca9ad7567183409c8cdbd86a139de,
     type: 3}
+  orientation: 0
+  minLength: 0.1
+  maxLength: 0.5
+  minWidth: 0.1
+  maxWidth: 0.5
 --- !u!4 &1524501146
 Transform:
   m_ObjectHideFlags: 0
@@ -31788,6 +31806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -35789,6 +35808,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -37790,6 +37810,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
