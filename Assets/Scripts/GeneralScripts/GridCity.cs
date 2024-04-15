@@ -14,6 +14,8 @@ namespace Demo
         public int columnWidth = 10;
         public GameObject waterPrefab;
 
+        private bool bigPrefabSpawned = false;
+        public GameObject bigPrefab;
         public GameObject[] northPrefabs;
         public GameObject[] eastPrefabs;
         public GameObject[] southPrefabs;
@@ -73,6 +75,7 @@ namespace Demo
         {
             valueGrid.InitializeGrid();
             DestroyChildren();
+            bigPrefabSpawned = false;
             float scaledNoBuildProbability = Mathf.Clamp01(roadProbability / 100);
             if (selectedAlgorithm == GenerationAlgorithm.BSP)
             {
@@ -91,6 +94,12 @@ namespace Demo
                 for (int col = 0; col < columns; col++)
                 {
                     Vector3 position = new Vector3(col * columnWidth, col < columns / 4 ? 0.1f : 0, row * rowWidth);
+                    if (IsExactCenterCell(row, col) && !bigPrefabSpawned)
+                    {
+                        Instantiate(bigPrefab, position, Quaternion.identity, transform);
+                        bigPrefabSpawned = true;
+                        continue;
+                    }
                     if (IsCentralArea(row, col))
                     {
                         InstantiateRandomPrefab(centralPrefabs, position);
@@ -173,6 +182,27 @@ namespace Demo
         {
             GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
             Instantiate(prefab, position, Quaternion.identity, transform);
+        }
+
+        bool IsExactCenterCell(int row, int col)
+        {
+            int centerRow1 = rows / 2;
+            int centerCol1 = columns / 2;
+
+            if (rows % 2 == 0 && columns % 2 == 0)
+            {
+                return (row == centerRow1 || row == centerRow1 - 1) && (col == centerCol1 || col == centerCol1 - 1);
+            }
+            else if (rows % 2 == 1 && columns % 2 == 1)
+            {
+                return row == centerRow1 && col == centerCol1;
+            }
+            else
+            {
+                int centerRow2 = (rows % 2 == 0) ? centerRow1 - 1 : centerRow1;
+                int centerCol2 = (columns % 2 == 0) ? centerCol1 - 1 : centerCol1;
+                return (row == centerRow1 || row == centerRow2) && (col == centerCol1 || col == centerCol2);
+            }
         }
 
         bool IsCentralArea(int row, int col)
