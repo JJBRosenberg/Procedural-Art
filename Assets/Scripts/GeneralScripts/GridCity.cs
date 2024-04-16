@@ -15,6 +15,10 @@ namespace Demo
         public int columns = 10;
         public int rowWidth = 10;
         public int columnWidth = 10;
+        public int minBuildingWidth = 5;
+        public int maxBuildingWidth = 10;
+        public int minBuildingLength = 5;
+        public int maxBuildingLength = 10;
         public GameObject waterPrefab;
 
         private bool bigPrefabSpawned = false;
@@ -97,6 +101,8 @@ namespace Demo
             {
                 for (int col = 0; col < columns; col++)
                 {
+                    int width = Random.Range(minBuildingWidth, maxBuildingWidth + 1);
+                    int depth = Random.Range(minBuildingLength, maxBuildingLength + 1);
                     Vector3 position = new Vector3(col * columnWidth, 0, row * rowWidth);
                     if (IsExactCenterCell(row, col) && !bigPrefabSpawned)
                     {
@@ -147,7 +153,7 @@ namespace Demo
                 roadInstance.transform.localScale = scale;
             }
 
-            if (width == centralAreaWidth && height == centralAreaHeight) return; // Base case for recursion
+            if (width == centralAreaWidth && height == centralAreaHeight) return;
 
             bool splitHorizontally = Random.value > 0.5;
             int split = Random.Range(1, splitHorizontally ? height : width);
@@ -197,8 +203,23 @@ namespace Demo
         void InstantiateRandomPrefab(GameObject[] prefabs, Vector3 position)
         {
             GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
-            Instantiate(prefab, position, Quaternion.identity, transform);
+            GameObject instance = Instantiate(prefab, position, Quaternion.identity, transform);
+
+            SimpleStock simpleStock = instance.GetComponent<SimpleStock>();
+
+            if (simpleStock != null)
+            {
+                int width = Random.Range(minBuildingWidth, maxBuildingWidth + 1);
+                int depth = Random.Range(minBuildingLength, maxBuildingLength + 1);
+                simpleStock.Width = width;
+                simpleStock.Depth = depth;
+            }
+            else
+            {
+                Debug.LogWarning("SimpleStock component not found on instantiated prefab.");
+            }
         }
+
 
         bool IsExactCenterCell(int row, int col)
         {

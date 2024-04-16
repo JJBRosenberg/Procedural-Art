@@ -8,8 +8,8 @@ namespace Demo
         public float stockContinueChance = 0.25f;
         const float balconyChanceAbove2 = 0.3f;
 
-        [SerializeField] int Width;
-        [SerializeField] int Depth;
+        public int Width;
+        public int Depth;
 
         [SerializeField] GameObject[] wallStyle;
         [SerializeField] GameObject doorPrefab;

@@ -20638,8 +20638,12 @@ MonoBehaviour:
   cylinderHeight: 25
   rows: 15
   columns: 15
-  rowWidth: 5
-  columnWidth: 5
+  rowWidth: 6
+  columnWidth: 6
+  minBuildingWidth: 3
+  maxBuildingWidth: 7
+  minBuildingLength: 3
+  maxBuildingLength: 8
   waterPrefab: {fileID: 1332045345741544357, guid: b71a6699ffb9c8a4fb82aec42f591891,
     type: 3}
   bigPrefab: {fileID: 8956201480844612614, guid: b318cd00ca2bb234884c8ec4c00ab6a4,
