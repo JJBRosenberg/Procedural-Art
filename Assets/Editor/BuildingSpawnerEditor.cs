@@ -9,9 +9,9 @@ public class BuildingSpawnerEditor : EditorWindow
     private bool useRandomPrefab = true;
     private float minHeight = 1f;
     private float maxHeight = 10f;
+    private Vector3 spawnPosition = Vector3.zero; 
     private List<GameObject> spawnedObjects = new List<GameObject>();
 
-    // Specify the path to the default prefab
     private const string defaultPrefabPath = "Assets/Prefabs/ProceduralSimpleBuilding1.prefab";
 
     [MenuItem("Tools/Building Spawner")]
@@ -22,18 +22,22 @@ public class BuildingSpawnerEditor : EditorWindow
         window.Show();
     }
 
+    void OnEnable()
+    {
+        SceneView.duringSceneGui += OnSceneGUI;
+    }
+
+    void OnDisable()
+    {
+        SceneView.duringSceneGui -= OnSceneGUI;
+    }
+
     void InitializePrefabList()
     {
         GameObject defaultPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(defaultPrefabPath);
         if (defaultPrefab != null)
         {
-            if (prefabs == null)
-                prefabs = new List<GameObject>();
-
-            if (prefabs.Count == 0)
-                prefabs.Add(defaultPrefab);
-            else
-                prefabs[0] = defaultPrefab;
+            prefabs.Add(defaultPrefab);
         }
         else
         {
@@ -71,6 +75,8 @@ public class BuildingSpawnerEditor : EditorWindow
         minHeight = EditorGUILayout.FloatField("Min Height", minHeight);
         maxHeight = EditorGUILayout.FloatField("Max Height", maxHeight);
 
+        EditorGUILayout.LabelField("Spawn Position: " + spawnPosition.ToString());
+
         if (GUILayout.Button("Spawn Prefab"))
         {
             SpawnPrefab();
@@ -84,6 +90,21 @@ public class BuildingSpawnerEditor : EditorWindow
         if (GUILayout.Button("Clear All Spawned"))
         {
             ClearAllSpawned();
+        }
+    }
+
+    private void OnSceneGUI(SceneView sceneView)
+    {
+        Event e = Event.current;
+        if (e.type == EventType.MouseUp && e.button == 2)
+        {
+            Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                spawnPosition = hit.point;
+                SceneView.RepaintAll();
+            }
+            e.Use();
         }
     }
 
@@ -102,7 +123,7 @@ public class BuildingSpawnerEditor : EditorWindow
             return;
         }
 
-        GameObject instance = Instantiate(prefabToSpawn, Vector3.zero, Quaternion.identity);
+        GameObject instance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
         spawnedObjects.Add(instance);
         Undo.RegisterCreatedObjectUndo(instance, "Spawned Prefab");
     }
@@ -119,10 +140,17 @@ public class BuildingSpawnerEditor : EditorWindow
 
     private void ClearAllSpawned()
     {
-        foreach (GameObject obj in spawnedObjects)
+        List<GameObject> tempSpawnedObjects = new List<GameObject>(spawnedObjects);
+
+        foreach (GameObject obj in tempSpawnedObjects)
         {
-            Undo.DestroyObjectImmediate(obj);
+            if (obj != null) 
+            {
+                Undo.DestroyObjectImmediate(obj); 
+            }
         }
-        spawnedObjects.Clear();
+        spawnedObjects.Clear(); 
+        Debug.Log("All spawned objects have been cleared.");
     }
+
 }
