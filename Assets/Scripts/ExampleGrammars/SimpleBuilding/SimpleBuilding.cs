@@ -14,7 +14,8 @@ namespace Demo
         public GameObject[] roofPrefabs;
 
         int stockNumber = 0;
-        public float roofProbability = 20.0f; 
+        public float roofProbability = 20.0f;
+        GameObject chosenStockPrefab = null;
 
         public void Initialize(int pBuildingHeight, float pStockHeight, int pStockNumber, GameObject[] pStockPrefabs, GameObject[] pRoofPrefabs, int pMinHeight, int pMaxHeight)
         {
@@ -48,7 +49,13 @@ namespace Demo
                     return;
                 }
 
-                GameObject newStock = SpawnPrefab(ChooseRandom(stockPrefabs));
+                // Determine stock prefab to use
+                if (chosenStockPrefab == null)  // Check if this is the first stock
+                {
+                    chosenStockPrefab = ChooseRandom(stockPrefabs);  // Choose stock prefab for the first stock
+                }
+
+                GameObject newStock = SpawnPrefab(chosenStockPrefab);  // Use the chosen stock prefab for all stocks
                 SimpleBuilding remainingBuilding = CreateSymbol<SimpleBuilding>("stock", new Vector3(0, stockHeight, 0));
                 remainingBuilding.Initialize(buildingHeight, stockHeight, stockNumber + 1, stockPrefabs, roofPrefabs, minHeight, maxHeight);
                 remainingBuilding.Generate(buildDelay);

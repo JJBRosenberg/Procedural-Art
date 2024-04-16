@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Net;
+using UnityEngine;
 
 namespace Demo
 {
@@ -9,7 +10,8 @@ namespace Demo
 
         [Range(0, 100)]
         public float customBuildingProbability;
-
+        [Range(0.00f, 1.0f)]
+        public float buildingSpacingMultiplier = 0.0f;
         public float cylinderHeight;
         public int rows = 10;
         public int columns = 10;
@@ -206,7 +208,7 @@ namespace Demo
             GameObject instance = Instantiate(prefab, position, Quaternion.identity, transform);
 
             SimpleStock simpleStock = instance.GetComponent<SimpleStock>();
-
+            SimpleBuilding simpleBuilding = instance.GetComponent<SimpleBuilding>();
             if (simpleStock != null)
             {
                 int width = Random.Range(minBuildingWidth, maxBuildingWidth + 1);
@@ -214,7 +216,10 @@ namespace Demo
                 simpleStock.Width = width;
                 simpleStock.Depth = depth;
             }
-            else
+            else if(simpleBuilding != null)
+            {
+                return;
+            } else 
             {
                 Debug.LogWarning("SimpleStock component not found on instantiated prefab.");
             }
@@ -249,15 +254,36 @@ namespace Demo
             return row >= centralRowStart && row < centralRowStart + centralAreaHeight &&
                    col >= centralColStart && col < centralColStart + centralAreaWidth;
         }
-        void PlaceCustomBuildings(Vector3 position)
+        void PlaceCustomBuildings(Vector3 basePosition)
         {
-            // Adjust position to fit two buildings side by side within the same cell
-            Vector3 position1 = position + new Vector3(-columnWidth / 4, 0, 0); // Shift first building to the left
-            Vector3 position2 = position + new Vector3(columnWidth / 4, 0, 0);  // Shift second building to the right
+            int buildingCount = Random.Range(1, 5); // Randomly choose 1, 2, or 4 buildings
 
-            Instantiate(customBuilding, position1, Quaternion.identity, transform);
-            Instantiate(customBuilding, position2, Quaternion.identity, transform);
+            switch (buildingCount)
+            {
+                case 1:
+                    Instantiate(customBuilding, basePosition, Quaternion.identity, transform);
+                    break;
+                case 2:
+                    // Adjustments for exactly touching buildings horizontally
+                    Vector3 position1 = basePosition + new Vector3(-minBuildingWidth / 2.0f, 0, 0);
+                    Vector3 position2 = basePosition + new Vector3(minBuildingWidth / 2.0f, 0, 0);
+                    Instantiate(customBuilding, position1, Quaternion.identity, transform);
+                    Instantiate(customBuilding, position2, Quaternion.identity, transform);
+                    break;
+                case 4:
+                    // Adjustments for exactly touching buildings in a 2x2 grid
+                    Vector3 topLeft = basePosition + new Vector3(-minBuildingWidth / 2.0f, 0, minBuildingLength / 2.0f);
+                    Vector3 topRight = basePosition + new Vector3(minBuildingWidth / 2.0f, 0, minBuildingLength / 2.0f);
+                    Vector3 bottomLeft = basePosition + new Vector3(-minBuildingWidth / 2.0f, 0, -minBuildingLength / 2.0f);
+                    Vector3 bottomRight = basePosition + new Vector3(minBuildingWidth / 2.0f, 0, -minBuildingLength / 2.0f);
+                    Instantiate(customBuilding, topLeft, Quaternion.identity, transform);
+                    Instantiate(customBuilding, topRight, Quaternion.identity, transform);
+                    Instantiate(customBuilding, bottomLeft, Quaternion.identity, transform);
+                    Instantiate(customBuilding, bottomRight, Quaternion.identity, transform);
+                    break;
+            }
         }
+
 
         void DestroyChildren()
         {

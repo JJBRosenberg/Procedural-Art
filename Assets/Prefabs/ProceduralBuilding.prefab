@@ -45,15 +45,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c5d4a9ee4ba2464183fc05d2b41478a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildDelay: 0.1
+  stockContinueChance: 0.1
   Width: 4
   Depth: 4
   wallStyle:
   - {fileID: -927199367670048503, guid: 14f82452b877a8945978b7090d0301f5, type: 3}
   - {fileID: -927199367670048503, guid: 3a6b7aeb07151e147a3bf8b4a4b1f8b9, type: 3}
   - {fileID: -927199367670048503, guid: 0dfe00013000a524e91c2fc61c13a4c8, type: 3}
+  doorPrefab: {fileID: -927199367670048503, guid: e6599e1602810b44597e9f15a6f5a319,
+    type: 3}
   roofStyle:
   - {fileID: -927199367670048503, guid: 20ce4895fadfac84d827e8a2db9526f6, type: 3}
   - {fileID: -927199367670048503, guid: d47dbadf5ffe0474eb6be594ce5e3849, type: 3}
+  balconyPrefab: {fileID: -927199367670048503, guid: 5a450e78da68c1040b9f9f72bb96ecdb,
+    type: 3}
+  minHeight: 0
+  maxHeight: 0
 --- !u!114 &8345122083041106080
 MonoBehaviour:
   m_ObjectHideFlags: 0

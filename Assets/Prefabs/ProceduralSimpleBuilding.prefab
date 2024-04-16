@@ -49,13 +49,15 @@ MonoBehaviour:
   stockHeight: 1
   maxHeight: 5
   minHeight: 2
-  floorPrefabs: []
+  floorPrefabs:
+  - {fileID: 4630473164913541460, guid: 5e149f377887ae0418f31147accf2925, type: 3}
   stockPrefabs:
   - {fileID: 4680434660386324223, guid: 6980d9a8b0617694b89efdf946fc9ce1, type: 3}
   - {fileID: 4630473164913541460, guid: 5e149f377887ae0418f31147accf2925, type: 3}
   roofPrefabs:
   - {fileID: 4977362457285617005, guid: ee7ae2596ddf3924da8d647fe05fb617, type: 3}
   - {fileID: 4357396193210809381, guid: 52629463b6271fe46b5a5eeebe8294e3, type: 3}
+  roofProbability: 20
 --- !u!114 &3604920485432597356
 MonoBehaviour:
   m_ObjectHideFlags: 0
