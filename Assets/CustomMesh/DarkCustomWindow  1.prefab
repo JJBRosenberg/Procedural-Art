@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3554031692596115287}
+  - component: {fileID: -2281815291858491199}
   m_Layer: 0
   m_Name: DarkCustomWindow  1
   m_TagString: Untagged
@@ -31,6 +32,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2281815291858491199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4186558001099550189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d27d9e2bb65d7a46a861de621e762fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  strengthPropertyName: _Strength
 --- !u!1 &5157870285134288180
 GameObject:
   m_ObjectHideFlags: 0
@@ -43,6 +57,7 @@ GameObject:
   - component: {fileID: 1294063133815799621}
   - component: {fileID: 2364624762546150353}
   - component: {fileID: 8275277599422134956}
+  - component: {fileID: 859307961864088338}
   m_Layer: 0
   m_Name: default
   m_TagString: Untagged
@@ -127,3 +142,16 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: 0645c2154e781984393ada8f71302e7e, type: 3}
+--- !u!114 &859307961864088338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5157870285134288180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d27d9e2bb65d7a46a861de621e762fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  strengthPropertyName: _Strength

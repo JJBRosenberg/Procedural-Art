@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8172675540048576221}
   - component: {fileID: 4633807347540384329}
   - component: {fileID: 4936205421381142365}
+  - component: {fileID: 5605396149202147626}
   m_Layer: 0
   m_Name: default
   m_TagString: Untagged
@@ -96,6 +97,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: 0645c2154e781984393ada8f71302e7e, type: 3}
+--- !u!114 &5605396149202147626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2813110637463491756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d27d9e2bb65d7a46a861de621e762fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  strengthPropertyName: _Strength
 --- !u!1 &6523436401361497205
 GameObject:
   m_ObjectHideFlags: 0
@@ -105,6 +119,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5894145887129663183}
+  - component: {fileID: -2997393739939554373}
   m_Layer: 0
   m_Name: 'DarkCustomWindow '
   m_TagString: Untagged
@@ -127,3 +142,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2997393739939554373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6523436401361497205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d27d9e2bb65d7a46a861de621e762fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  strengthPropertyName: _Strength

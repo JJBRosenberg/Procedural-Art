@@ -14,6 +14,7 @@ namespace Demo
         public GameObject[] roofPrefabs;
 
         int stockNumber = 0;
+        public float roofProbability = 20.0f; 
 
         public void Initialize(int pBuildingHeight, float pStockHeight, int pStockNumber, GameObject[] pStockPrefabs, GameObject[] pRoofPrefabs, int pMinHeight, int pMaxHeight)
         {
@@ -24,7 +25,6 @@ namespace Demo
             roofPrefabs = pRoofPrefabs;
             minHeight = pMinHeight;
             maxHeight = pMaxHeight;
-
         }
 
         GameObject ChooseRandom(GameObject[] choices)
@@ -42,14 +42,16 @@ namespace Demo
 
             if (stockNumber < buildingHeight)
             {
-                GameObject newStock = buildingHeight == 1 ? SpawnPrefab(floorPrefabs[0]) : SpawnPrefab(ChooseRandom(stockPrefabs));
+                if ((stockNumber >= minHeight && Random.Range(0, 100) < roofProbability) || stockNumber == maxHeight - 1)
+                {
+                    GameObject newRoof = SpawnPrefab(ChooseRandom(roofPrefabs));
+                    return;
+                }
+
+                GameObject newStock = SpawnPrefab(ChooseRandom(stockPrefabs));
                 SimpleBuilding remainingBuilding = CreateSymbol<SimpleBuilding>("stock", new Vector3(0, stockHeight, 0));
                 remainingBuilding.Initialize(buildingHeight, stockHeight, stockNumber + 1, stockPrefabs, roofPrefabs, minHeight, maxHeight);
                 remainingBuilding.Generate(buildDelay);
-            }
-            else if (stockNumber >= buildingHeight)
-            {
-                GameObject newRoof = SpawnPrefab(ChooseRandom(roofPrefabs));
             }
         }
     }

@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2235234738964724120}
+  - component: {fileID: -1153963305539253955}
   m_Layer: 6
   m_Name: ResidentalOpenWindow
   m_TagString: Untagged
@@ -31,6 +32,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-1153963305539253955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463378003238757154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d27d9e2bb65d7a46a861de621e762fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  strengthPropertyName: _Strength
 --- !u!1 &7621002520701819899
 GameObject:
   m_ObjectHideFlags: 0
@@ -43,6 +57,7 @@ GameObject:
   - component: {fileID: 4585294750335496586}
   - component: {fileID: 1046954323538793758}
   - component: {fileID: 5446900642875971102}
+  - component: {fileID: 7534802980209147851}
   m_Layer: 6
   m_Name: default
   m_TagString: Untagged
@@ -91,7 +106,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f444ecaedf3bd7c4ba9bb55c9b6626ff, type: 2}
+  - {fileID: 2100000, guid: 37042ead017d5ee4c958c4b961f0f523, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,3 +142,16 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: 0645c2154e781984393ada8f71302e7e, type: 3}
+--- !u!114 &7534802980209147851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7621002520701819899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d27d9e2bb65d7a46a861de621e762fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  strengthPropertyName: _Strength
