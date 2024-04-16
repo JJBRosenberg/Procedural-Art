@@ -47,8 +47,8 @@ MonoBehaviour:
   buildDelay: 0.1
   buildingHeight: 20
   stockHeight: 1
-  maxHeight: 16
-  minHeight: 13
+  maxHeight: 12
+  minHeight: 6
   floorPrefabs: []
   stockPrefabs:
   - {fileID: 919132149155446097, guid: 72750b75cb6760f489916f89abff917e, type: 3}
