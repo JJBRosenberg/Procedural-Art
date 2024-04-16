@@ -21435,7 +21435,6 @@ MonoBehaviour:
   - {fileID: 8956201480844612614, guid: 726653ec29f3adc4eacfad743f842802, type: 3}
   southPrefabs:
   - {fileID: 8391393497358842173, guid: 81e7d7cd69c57714cb393e11c34d409c, type: 3}
-  - {fileID: 3604920485432597347, guid: fee6c2ac503a81e4cb074a72365b79d0, type: 3}
   - {fileID: 8391393497358842173, guid: ff6d466a9ec203847874743b24ffbe5c, type: 3}
   - {fileID: 8391393497358842173, guid: 8a507ba46a3963e448f7b90fcca13639, type: 3}
   westPrefabs:
