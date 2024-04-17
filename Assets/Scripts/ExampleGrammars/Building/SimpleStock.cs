@@ -6,7 +6,7 @@ namespace Demo
     public class SimpleStock : Shape
     {
         public float stockContinueChance = 0.25f;
-        const float balconyChanceAbove2 = 0.3f;
+        const float balconyChanceAbove2 = 0f;
 
         public int Width;
         public int Depth;

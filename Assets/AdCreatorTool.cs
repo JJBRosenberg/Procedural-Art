@@ -3,20 +3,14 @@ using UnityEngine;
 public class AdCreatorTool : MonoBehaviour
 {
     public GameObject adPrefab;
-    public enum Orientation
-    {
-        Horizontal,
-        Vertical
-    }
-    public Orientation orientation = Orientation.Horizontal;
-    public float minLength = 0.1f;  
-    public float maxLength = 0.5f; 
-    public float minWidth = 0.1f; 
-    public float maxWidth = 0.5f;   
+    public float minLength = 0.1f;
+    public float maxLength = 0.5f;
+    public float minWidth = 0.1f;
+    public float maxWidth = 0.5f;
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(2)) 
+        if (Input.GetMouseButtonDown(2)) // Middle mouse button
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
@@ -32,12 +26,7 @@ public class AdCreatorTool : MonoBehaviour
         Vector3 forward = -Vector3.Cross(normal, Vector3.Cross(toCamera, normal)).normalized;
         Quaternion lookAtCamera = Quaternion.LookRotation(forward, normal);
 
-        lookAtCamera = orientation == Orientation.Vertical
-            ? Quaternion.LookRotation(forward, Vector3.Cross(forward, normal))
-            : lookAtCamera;
-
-        float xRotation = orientation == Orientation.Horizontal ? 0 : 90;
-        Quaternion finalRotation = Quaternion.Euler(xRotation, lookAtCamera.eulerAngles.y, lookAtCamera.eulerAngles.z);
+        Quaternion finalRotation = Quaternion.Euler(0, lookAtCamera.eulerAngles.y, lookAtCamera.eulerAngles.z);
 
         Vector3 adjustedPosition = position + (toCamera * 0.1f);
 

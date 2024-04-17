@@ -130,9 +130,8 @@ MonoBehaviour:
   GenerateAllMipmaps: 1
   OutputMaterial: {fileID: 2100000, guid: 5b39e2a644396fb4b8f2018126443b31, type: 2}
   DefaultPreset: " <sbspreset pkgurl=\"pkg://Brick_Wall\" label=\"\" >\n  <presetinput
-    identifier=\"$outputsize\" uid=\"1160043161\" type=\"8\" value=\"10,10\" />\n
-    </sbspreset>\n"
-  MaterialShader: Standard
+    identifier=\"$outputsize\" uid=\"1160043161\" type=\"8\" value=\"10,10\" />\n</sbspreset>\n"
+  MaterialShader: Universal Render Pipeline/Lit
   RenderTextures: 0
   OutputRemaped: 0
   Presets: []

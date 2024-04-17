@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildDelay: 0.1
+  stockContinueChance: 0.25
   Width: 4
   Depth: 4
   wallStyle:
@@ -112,4 +113,4 @@ LODGroup:
   - screenRelativeHeight: 0.1
     fadeTransitionWidth: 0
     renderers: []
-  m_Enabled: 0
+  m_Enabled: 1

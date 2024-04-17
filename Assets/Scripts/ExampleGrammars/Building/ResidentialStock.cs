@@ -6,7 +6,7 @@ namespace Demo
     public class ResidentialStock : Shape
     {
         const float stockContinueChance = 0.5f;
-        const float balconyChanceAbove2 = 0.3f;
+        const float balconyChanceAbove2 = 0f; // No balcony generation
 
         [SerializeField] int Width;
         [SerializeField] int Depth;
@@ -22,6 +22,7 @@ namespace Demo
         public int maxHeight;
 
         private LODGroup lodGroup;
+        private List<Renderer> allRenderers = new List<Renderer>();
 
         private void Awake()
         {
@@ -29,6 +30,21 @@ namespace Demo
             if (lodGroup == null)
             {
                 Debug.LogError("LODGroup component not found on the GameObject or its parents.");
+            }
+            else
+            {
+                PrepareLODLevels();
+            }
+        }
+
+        private void PrepareLODLevels()
+        {
+            if (lodGroup.lodCount == 0) // If no LODs are set up, set up a default one
+            {
+                LOD[] lods = new LOD[2];
+                lods[0] = new LOD(0.5f, new Renderer[0]); // High detail LOD
+                lods[1] = new LOD(0.15f, new Renderer[0]); // Low detail LOD
+                lodGroup.SetLODs(lods);
             }
         }
 
@@ -68,8 +84,6 @@ namespace Demo
                 return;
             }
 
-            List<Renderer> allRenderers = new List<Renderer>();
-
             for (int i = 0; i < 4; i++)
             {
                 Vector3 localPosition = Vector3.zero;
@@ -89,31 +103,13 @@ namespace Demo
                         break;
                 }
 
-                SimpleRow newRow;
-                if (i == doorWallIndex)
-                {
-                    newRow = CreateSymbol<SimpleRow>("wallWithDoor", localPosition, Quaternion.Euler(0, i * 90, 0));
-                    newRow.Initialize(i % 2 == 1 ? Width : Depth, new GameObject[] { doorPrefab });
-                }
-                else if (i == 3 && currentHeightIndex > 0 && Random.value < balconyChanceAbove2)
-                {
-                    newRow = CreateSymbol<SimpleRow>("balcony", localPosition, Quaternion.Euler(0, i * 90, 0));
-                    newRow.Initialize(i % 2 == 1 ? Width : Depth, new GameObject[] { balconyPrefab });
-                }
-                else
-                {
-                    newRow = CreateSymbol<SimpleRow>("wall", localPosition, Quaternion.Euler(0, i * 90, 0));
-                    newRow.Initialize(i % 2 == 1 ? Width : Depth, wallStyle);
-                }
-
+                SimpleRow newRow = CreateSymbol<SimpleRow>(i == doorWallIndex ? "wallWithDoor" : "wall", localPosition, Quaternion.Euler(0, i * 90, 0));
+                newRow.Initialize(i % 2 == 1 ? Width : Depth, i == doorWallIndex ? new GameObject[] { doorPrefab } : wallStyle);
                 newRow.Generate();
-
-                Renderer[] rowRenderers = newRow.GetComponentsInChildren<Renderer>();
-                allRenderers.AddRange(rowRenderers);
+                allRenderers.AddRange(newRow.GetComponentsInChildren<Renderer>());
             }
 
-            // Add all renderers to the LOD group
-            AddRenderersToLODGroup(allRenderers);
+            AddRenderersToLODGroup();
 
             currentHeightIndex++;
 
@@ -132,28 +128,35 @@ namespace Demo
         private void GenerateRoof()
         {
             SimpleRoof nextRoof = CreateSymbol<SimpleRoof>("roof", new Vector3(0, 1, 0));
-            nextRoof.Initialize(Width, Depth, roofStyle, wallStyle, balconyPrefab, currentHeightIndex = 0);
+            nextRoof.Initialize(Width, Depth, roofStyle, wallStyle, balconyPrefab, 0);
             nextRoof.Generate();
         }
 
-        private void AddRenderersToLODGroup(List<Renderer> renderers)
+        private void AddRenderersToLODGroup()
         {
-            if (lodGroup == null)
+            if (lodGroup == null || lodGroup.lodCount == 0)
             {
-                Debug.LogWarning("LODGroup component not found on the GameObject.");
+                Debug.LogWarning("LODGroup component not found or not set up properly.");
                 return;
             }
 
+            // Assume LOD[0] is for close detail and LOD[1] is for far detail
             LOD[] lods = lodGroup.GetLODs();
-            if (lods.Length == 0)
+            foreach (Renderer renderer in allRenderers)
             {
-                Debug.LogWarning("No LOD levels found on the LODGroup.");
-                return;
+                if (renderer.bounds.size.sqrMagnitude > 1) // Example condition for sorting into LOD levels
+                {
+                    List<Renderer> highDetailRenderers = new List<Renderer>(lods[0].renderers);
+                    highDetailRenderers.Add(renderer);
+                    lods[0].renderers = highDetailRenderers.ToArray();
+                }
+                else
+                {
+                    List<Renderer> lowDetailRenderers = new List<Renderer>(lods[1].renderers);
+                    lowDetailRenderers.Add(renderer);
+                    lods[1].renderers = lowDetailRenderers.ToArray();
+                }
             }
-
-            List<Renderer> updatedRenderers = new List<Renderer>(lods[0].renderers);
-            updatedRenderers.AddRange(renderers);
-            lods[0].renderers = updatedRenderers.ToArray();
 
             lodGroup.SetLODs(lods);
             lodGroup.RecalculateBounds();

@@ -132,7 +132,7 @@ MonoBehaviour:
   DefaultPreset: " <sbspreset pkgurl=\"pkg://Wall_with_windows_simple\" label=\"\"
     >\n  <presetinput identifier=\"$outputsize\" uid=\"4208784477\" type=\"8\" value=\"10,10\"
     />\n </sbspreset>\n"
-  MaterialShader: Standard
+  MaterialShader: Universal Render Pipeline/Lit
   RenderTextures: 0
   OutputRemaped: 0
   Presets: []

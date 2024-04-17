@@ -44,9 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d27d9e2bb65d7a46a861de621e762fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  propertyName: _Strength
-  minStrength: 0
-  maxStrength: 1
+  strengthPropertyName: _Strength
 --- !u!1 &5084517335626635351
 GameObject:
   m_ObjectHideFlags: 0
@@ -59,6 +57,7 @@ GameObject:
   - component: {fileID: 1220147508784362022}
   - component: {fileID: 2435162691078739634}
   - component: {fileID: 8718680931865987442}
+  - component: {fileID: 1802169478434238803}
   m_Layer: 0
   m_Name: default
   m_TagString: Untagged
@@ -143,3 +142,15 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: 0645c2154e781984393ada8f71302e7e, type: 3}
+--- !u!114 &1802169478434238803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5084517335626635351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d39bc7e7130f3240926088adc74f12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
